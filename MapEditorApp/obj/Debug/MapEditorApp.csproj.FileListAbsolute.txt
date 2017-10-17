@@ -1,0 +1,14 @@
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\bin\Debug\WindowsFormsApp1.exe.config
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\bin\Debug\WindowsFormsApp1.exe
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.csprojResolveAssemblyReference.cache
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.ImageSelection.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.MapEditor.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.MapTools.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.MapEditorParent.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.UploadBox.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.csproj.GenerateResource.Cache
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.csproj.CoreCompileInputs.cache
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\WindowsFormsApp1.exe
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\WindowsFormsApp1.pdb

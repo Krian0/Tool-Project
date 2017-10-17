@@ -1,124 +1,209 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace MapEditorApp
 {
     public partial class ImageSelection : Form
     {
-        Form uploadBox;
 
-        float gridWidth = 30;
-        float gridHeight = 30;
-        float margin = 8;
+        #region Variables
+        private Form uploadBox;
+
+        private bool usingGrid;
+
+        private float gridWidth = 30;
+        private float gridHeight = 30;
+        private float margin = 8;
 
         private PointF mousePos;
+        private PointF startPos;
         private RectangleF selectedArea;
 
-        public Bitmap bitmap;
+        private Bitmap bitmap;
         public Image image;
-        public string path;
+        #endregion
 
+        #region Functions
         public ImageSelection()
         {
             InitializeComponent();
             bitmap = new Bitmap(pictureBoxImage.Width, pictureBoxImage.Height);
+            SwitchToGrid();
         }
 
-        private void buttonNewImage_Click(object sender, EventArgs e)
+        //Used by UploadBox on closing to bring ImageSelection to front and draw selected file
+        public void OnUploadBoxClose()
         {
-            uploadBox = new UploadBox(this);
-            uploadBox.Show();
-
-            drawGrid();
+            BringToFront();
+            Draw(null);
         }
 
-        private void drawGrid()
+        //Draw Grid/Custom Selection to PictureBoxImage. Takes an EventArgs parameter
+        private void Draw(EventArgs e)
         {
             if (image == null)
                 return;
 
-            pictureBoxImage.DrawToBitmap(bitmap, pictureBoxImage.Bounds);
+            Graphics g;
+            g = Graphics.FromImage(bitmap);
+            g.Clear(Color.White);
+            g.DrawImage(image, 0, 0);
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            Graphics graphics;
-            graphics = Graphics.FromImage(bitmap);
-            graphics.Clear(Color.White);
-            graphics.DrawImage(image, 0, 0);
-
-            Pen pen = new Pen(Brushes.Black);
-            Pen highlight = new Pen(Brushes.Red);
+            Pen highlighter = new Pen(Brushes.Red);
+            Pen gridPen = new Pen(Brushes.Black);
 
 
-            float height = pictureBoxImage.Height;
-            float width = pictureBoxImage.Width;
-
-            for (float x = 0; x < width; x += gridWidth)
+            if (usingGrid == false && (e as MouseEventArgs).Button == MouseButtons.Left)
             {
-                for (float y = 0; y < height; y += gridHeight)
+                PointF location = new PointF(Math.Min(mousePos.X, startPos.X), Math.Min(mousePos.Y, startPos.Y));
+                PointF extents = new PointF(Math.Max(mousePos.X, startPos.X), Math.Max(mousePos.Y, startPos.Y));
+
+                extents = new PointF(extents.X - location.X, extents.Y - location.Y);
+
+                selectedArea.Location = location;
+                selectedArea.Width = (extents.X < pictureBoxImage.Width - 2) ? extents.X : pictureBoxImage.Width;
+                selectedArea.Height = (extents.Y < pictureBoxImage.Height - 2) ? extents.Y : pictureBoxImage.Height;
+            }
+            else
+            {
+                for (float x = 0; x < pictureBoxImage.Width; x += (gridWidth + margin))
                 {
-                    graphics.DrawRectangle(pen, x, y, gridWidth, gridHeight);
-                    graphics.DrawRectangle(pen, x + gridWidth, y + gridHeight, margin, margin);
+                    for (float y = 0; y < pictureBoxImage.Height; y += (gridHeight + margin))
+                    {
+                        g.DrawRectangle(gridPen, x, y, gridWidth, gridHeight);
+                        g.DrawRectangle(gridPen, x + gridWidth, y + gridHeight, margin, margin);
 
-
-                    if (mousePos.X > x && mousePos.X < (x + gridWidth) && mousePos.Y > y && mousePos.Y < (y + gridHeight))
-                        selectedArea.Location = new PointF(x, y);
-
-                    y += margin;
+                        RectangleF area = new RectangleF(x, y, gridWidth, gridHeight);
+                        if (area.Contains(mousePos) == true)
+                            selectedArea = area;
+                    }
                 }
-                    x += margin;
             }
 
 
-            graphics.DrawRectangle(highlight, selectedArea.X, selectedArea.Y, gridWidth, gridHeight);
-            graphics.Dispose();
+            g.DrawRectangle(highlighter, selectedArea.X, selectedArea.Y, selectedArea.Width, selectedArea.Height);
+            //
+
+       //
+       //Add preview to PictureBoxPreview
 
             pictureBoxImage.Image = bitmap;
         }
 
-        private void ImageSelection_Enter(object sender, EventArgs e)
+        //Change variables to set up Grid Mode
+        private void SwitchToGrid()
         {
-            drawGrid();
+            buttonCustom.BackColor = SystemColors.ControlLightLight;
+            buttonGrid.BackColor = SystemColors.ActiveBorder;
+            panelGridOptions.Visible = true;
+            selectedArea = new RectangleF(0, 0, gridWidth, gridHeight);
+
+            usingGrid = true;
         }
 
-        private void ImageSelection_Shown(object sender, EventArgs e)
+        //Change variables to set up Custom Selection Mode
+        private void SwitchToCustom()
         {
-            drawGrid();
+            buttonGrid.BackColor = SystemColors.ControlLightLight;
+            buttonCustom.BackColor = SystemColors.ActiveBorder;
+            panelGridOptions.Visible = false;
+
+            usingGrid = false;
+        }
+        #endregion
+
+
+        #region Actions & Behaviours
+        //Open the UploadBox to select an image
+        private void ButtonNewImage_Click(object sender, EventArgs e)
+        {
+            if (usingGrid == false)
+                ButtonGrid_Click(sender, e);
+
+            uploadBox = new UploadBox(this);
+            uploadBox.Show();
         }
 
-        private void pictureBoxImage_Click(object sender, EventArgs e)
+        //
+        private void PictureBoxImage_Click(object sender, EventArgs e)
         {
-            if (pictureBoxImage == null)
-                return;
-
-            if (e.GetType() == typeof(MouseEventArgs))
+            if (usingGrid == true && e.GetType() == typeof(MouseEventArgs))
             {
                 mousePos = (e as MouseEventArgs).Location;
-                drawGrid();
+                Draw(e);
             }
         }
 
-        private void numericUpDownWidth_ValueChanged(object sender, EventArgs e)
+        //
+        private void NumericUpDownWidth_ValueChanged(object sender, EventArgs e)
         {
             gridWidth = (float)numericUpDownWidth.Value;
-            drawGrid();
+            Draw(e);
         }
 
-        private void numericUpDownHeight_ValueChanged(object sender, EventArgs e)
+        //
+        private void NumericUpDownHeight_ValueChanged(object sender, EventArgs e)
         {
             gridHeight = (float)numericUpDownHeight.Value;
-            drawGrid();
+            Draw(e);
         }
 
-        private void numericUpDownMargin_ValueChanged(object sender, EventArgs e)
+        //
+        private void NumericUpDownMargin_ValueChanged(object sender, EventArgs e)
         {
             margin = (float)numericUpDownMargin.Value;
-            drawGrid();
+            Draw(e);
         }
+
+        //
+        private void ButtonGrid_Click(object sender, EventArgs e)
+        {
+            SwitchToGrid();
+            Draw(e);
+        }
+
+        //
+        private void ButtonCustom_Click(object sender, EventArgs e)
+        {
+            SwitchToCustom();
+            Draw(e);
+        }
+
+        //
+        private void PictureBoxImage_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (usingGrid == false)
+            {
+                startPos = (e as MouseEventArgs).Location;
+                pictureBoxImage.Invalidate();
+                Draw(e);
+            }
+        }
+
+        //
+        private void PictureBoxImage_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (usingGrid == false)
+            {
+                mousePos = (e as MouseEventArgs).Location;
+                pictureBoxImage.Invalidate();
+                Draw(e);
+            }
+        }
+
+        //
+        private void PictureBoxImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (usingGrid == false && e.Button == MouseButtons.Left)
+            {
+                mousePos = (e as MouseEventArgs).Location;
+                pictureBoxImage.Invalidate();
+                Draw(e);
+            }
+        }
+        #endregion
     }
 }

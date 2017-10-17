@@ -12,7 +12,7 @@ namespace MapEditorApp
 {
     public partial class UploadBox : Form
     {
-        ImageSelection parent;
+        private ImageSelection parent;
         
         public UploadBox(ImageSelection parentForm)
         {
@@ -27,8 +27,8 @@ namespace MapEditorApp
             {
                 if (dlg.CheckFileExists == true)
                 {
-                    parent.path = dlg.FileName;
                     parent.image = Image.FromFile(dlg.FileName);
+                    parent.OnUploadBoxClose();
 
                     this.Close();
                 }

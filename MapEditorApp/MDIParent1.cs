@@ -112,7 +112,7 @@ namespace MapEditorApp
 
         private void MapEditorParent_Resize(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Maximized)
+            if (this.WindowState == FormWindowState.Maximized && editor != null)
                 editor.Width = Screen.GetWorkingArea(this).Width - (tool.Width + 4);
 
             if (this.WindowState == FormWindowState.Normal)

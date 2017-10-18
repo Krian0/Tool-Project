@@ -22,7 +22,7 @@ namespace MapEditorApp
 
         private void addMap()
         {
-            mapList.Add(new Map("Map " + mapList.Count.ToString()));
+            mapList.Add(new Map("Map " + mapList.Count + 1));
             listViewMap.Items.Add(mapList.Last().GetListViewMap());
         }
 
@@ -38,9 +38,17 @@ namespace MapEditorApp
                 listViewMap.Items.Add(map.GetListViewMap());
         }
 
-        public void addItem()
+        public void addItem(Bitmap bitmap)
         {
-
+            if (listViewMap.SelectedItems.Count <= 0)
+            {
+                //Let user know they haven't selected a map
+                return;
+            }
+            int index = listViewMap.SelectedIndices[0];
+            int a = mapList[index].itemList.Count + 1;
+            mapList[index].itemList.Add(new Item("Item ", a, bitmap));
+            listViewItem.Items.Add(mapList[index].itemList.Last().GetListViewItem());
         }
 
         private void deleteItem()
@@ -97,9 +105,13 @@ namespace MapEditorApp
 
         private void buttonFromGrid_Click(object sender, EventArgs e)
         {
-            Form imageSelection = new ImageSelection();
-            imageSelection.MdiParent = Parent as MapEditorParent;
-            imageSelection.Show();
+            if (mapList.Count > 0)
+            {
+                Form imageSelection = new ImageSelection();
+                imageSelection.MdiParent = Parent as MapEditorParent;
+                imageSelection.Owner = this;
+                imageSelection.Show();
+            }
         }
     }
 }

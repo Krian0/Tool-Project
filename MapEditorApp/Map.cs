@@ -11,7 +11,7 @@ namespace MapEditorApp
     {
         public string Name { get; set; }
         public bool Saved { get; set; }
-        public List<Item> itemList;
+        public List<Item> itemList = new List<Item>();
 
         public Map(string MapName)
         {

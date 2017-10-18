@@ -31,17 +31,21 @@ namespace MapEditorApp
         {
             InitializeComponent();
             SwitchToGrid();
-
-            panel2.AutoScroll = true;
             areaSelected = false;
+
+            //Make picturesize workingspace size on maximize
         }
 
         //Used by UploadBox on closing to bring ImageSelection to front and draw selected file
         public void OnUploadBoxClose()
         {
-            mainBit = new Bitmap(image.Width, image.Height);
+            mainBit = new Bitmap(image);
             previewBit = new Bitmap(pictureBoxPreview.Width, pictureBoxPreview.Height);
             BringToFront();
+
+            panel2.AutoScroll = true;
+            pictureBoxImage.SizeMode = PictureBoxSizeMode.AutoSize;
+
             Draw(null);
         }
 
@@ -60,18 +64,19 @@ namespace MapEditorApp
             if (image == null)
                 return;
 
+            panel2.Controls.Add(pictureBoxImage);
+
             Graphics g = SetGraphics(mainBit);
             Graphics gP = SetGraphics(previewBit);
             g.Clear(Color.White);
             g.DrawImage(image, 0, 0);
-            pictureBoxImage.SizeMode = PictureBoxSizeMode.AutoSize;
 
 
             Pen highlighter = new Pen(Brushes.Red);
             Pen gridPen = new Pen(Brushes.Black);
 
 
-            if (usingGrid == false && (e as MouseEventArgs).Button == MouseButtons.Left)
+            if (usingGrid == false)
             {
                 PointF location = new PointF(Math.Min(mousePos.X, startPos.X), Math.Min(mousePos.Y, startPos.Y));
                 PointF extents = new PointF(Math.Max(mousePos.X, startPos.X), Math.Max(mousePos.Y, startPos.Y));
@@ -225,5 +230,19 @@ namespace MapEditorApp
             }
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (selectedArea.Width > 0 && selectedArea.Height > 0)
+            {
+                // An empty bitmap which will hold the cropped image
+                Bitmap bitmap = new Bitmap((int)selectedArea.Width, (int)selectedArea.Height);
+
+                Graphics g = Graphics.FromImage(bitmap);
+                g.DrawImage(mainBit, 0, 0, selectedArea, GraphicsUnit.Pixel);
+
+                (Owner as MapTools).addItem(bitmap);
+            }
+        }
     }
 }

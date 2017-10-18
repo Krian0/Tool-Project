@@ -156,6 +156,7 @@
             this.button1.TabIndex = 7;
             this.button1.Text = "Add Selected Tile";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // buttonCustom
             // 
@@ -192,7 +193,6 @@
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel2.Controls.Add(this.pictureBoxImage);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
@@ -202,7 +202,7 @@
             // pictureBoxImage
             // 
             this.pictureBoxImage.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.pictureBoxImage.Location = new System.Drawing.Point(0, 2);
+            this.pictureBoxImage.Location = new System.Drawing.Point(3, 2);
             this.pictureBoxImage.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBoxImage.Name = "pictureBoxImage";
             this.pictureBoxImage.Size = new System.Drawing.Size(1005, 627);
@@ -221,7 +221,6 @@
             this.ClientSize = new System.Drawing.Size(1251, 629);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImageSelection";
             this.Text = "ImageSelection";

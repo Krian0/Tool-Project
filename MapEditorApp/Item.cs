@@ -14,11 +14,14 @@ namespace MapEditorApp
         public PointF Pos { get; set; }
         public int Layer { get; set; }
 
-        public Item(string ItemName, int ItemNumber)
+        public Bitmap Bitmap { get; set; }
+
+        public Item(string ItemName, int ItemLayer, Bitmap bitmap)
         {
-            Name = ItemName;
+            Name = ItemName + ItemLayer;
             Pos = new PointF(0, 0);
-            Layer = ItemNumber;
+            Layer = ItemLayer;
+            Bitmap = bitmap;
         }
 
         public ListViewItem GetListViewItem()

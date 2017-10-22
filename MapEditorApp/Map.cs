@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MapEditorApp
 {
     public class Map
     {
+        //Remove use of itemlist in maptools, provide methods here!!!
+
         public string Name { get; private set; }
         public bool Saved { get; private set; }
         public List<Item> ItemList { get; set; } = new List<Item>();
@@ -23,6 +26,16 @@ namespace MapEditorApp
         public void ChangeSaveStatus(bool saved)
         {
             Saved = saved;
+        }
+
+        public void AddItem(Bitmap bitmap)
+        {
+            ItemList.Add(new Item("Item ", ItemList.Count, bitmap));
+        }
+
+        public void ChangeItemName()
+        {
+
         }
 
         public ComponentOwl.BetterListView.BetterListViewItem ListViewMap

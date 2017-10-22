@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using ComponentOwl.BetterListView;
 
+//NOTE: If BetterListView is not working or has a red squiggle, it can be downloaded at 
+//[ https://visualstudiogallery.msdn.microsoft.com/f46bc2cb-9ba3-4ad6-91fd-55f0eadba6ea/view/Reviews ]
+
 namespace MapEditorApp
 {
     public partial class MapTools : Form
@@ -48,7 +51,7 @@ namespace MapEditorApp
         {
             if (MapIndex.Count == 0 || MapIndex == null) { return; }
 
-            MapList[MapIndex[0]].ItemList.Add(new Item("Item ", MapList[MapIndex[0]].ItemList.Count, bitmap));
+            MapList[MapIndex[0]].AddItem(bitmap);
             RefreshItems();
 
             editor.ListsChanged();

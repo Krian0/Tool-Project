@@ -50,10 +50,10 @@
             // 
             // buttonFromGrid
             // 
-            this.buttonFromGrid.Location = new System.Drawing.Point(12, 562);
-            this.buttonFromGrid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonFromGrid.Location = new System.Drawing.Point(9, 457);
+            this.buttonFromGrid.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonFromGrid.Name = "buttonFromGrid";
-            this.buttonFromGrid.Size = new System.Drawing.Size(125, 23);
+            this.buttonFromGrid.Size = new System.Drawing.Size(94, 19);
             this.buttonFromGrid.TabIndex = 3;
             this.buttonFromGrid.Text = "Add From Grid";
             this.toolTip.SetToolTip(this.buttonFromGrid, "Add an item (image) from a grid or custom area");
@@ -62,10 +62,10 @@
             // 
             // buttonFromFile
             // 
-            this.buttonFromFile.Location = new System.Drawing.Point(12, 592);
-            this.buttonFromFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonFromFile.Location = new System.Drawing.Point(9, 481);
+            this.buttonFromFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonFromFile.Name = "buttonFromFile";
-            this.buttonFromFile.Size = new System.Drawing.Size(125, 23);
+            this.buttonFromFile.Size = new System.Drawing.Size(94, 19);
             this.buttonFromFile.TabIndex = 4;
             this.buttonFromFile.Text = "Add From File";
             this.toolTip.SetToolTip(this.buttonFromFile, "Add an item (image) from a file");
@@ -74,10 +74,11 @@
             // 
             // MoveUp
             // 
-            this.MoveUp.Location = new System.Drawing.Point(260, 562);
-            this.MoveUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MoveUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MoveUp.Location = new System.Drawing.Point(195, 457);
+            this.MoveUp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MoveUp.Name = "MoveUp";
-            this.MoveUp.Size = new System.Drawing.Size(29, 23);
+            this.MoveUp.Size = new System.Drawing.Size(22, 19);
             this.MoveUp.TabIndex = 5;
             this.MoveUp.Text = "▲";
             this.toolTip.SetToolTip(this.MoveUp, "Move item up");
@@ -85,10 +86,10 @@
             // 
             // MoveDown
             // 
-            this.MoveDown.Location = new System.Drawing.Point(260, 592);
-            this.MoveDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MoveDown.Location = new System.Drawing.Point(195, 481);
+            this.MoveDown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MoveDown.Name = "MoveDown";
-            this.MoveDown.Size = new System.Drawing.Size(29, 23);
+            this.MoveDown.Size = new System.Drawing.Size(22, 19);
             this.MoveDown.TabIndex = 6;
             this.MoveDown.Text = "▼";
             this.toolTip.SetToolTip(this.MoveDown, "Move item down");
@@ -96,10 +97,10 @@
             // 
             // buttonDeleteMap
             // 
-            this.buttonDeleteMap.Location = new System.Drawing.Point(195, 12);
-            this.buttonDeleteMap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonDeleteMap.Location = new System.Drawing.Point(146, 10);
+            this.buttonDeleteMap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonDeleteMap.Name = "buttonDeleteMap";
-            this.buttonDeleteMap.Size = new System.Drawing.Size(96, 25);
+            this.buttonDeleteMap.Size = new System.Drawing.Size(72, 20);
             this.buttonDeleteMap.TabIndex = 7;
             this.buttonDeleteMap.Text = "Delete Map";
             this.toolTip.SetToolTip(this.buttonDeleteMap, "Delete selected map");
@@ -108,10 +109,10 @@
             // 
             // buttonNewMap
             // 
-            this.buttonNewMap.Location = new System.Drawing.Point(12, 12);
-            this.buttonNewMap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonNewMap.Location = new System.Drawing.Point(9, 10);
+            this.buttonNewMap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonNewMap.Name = "buttonNewMap";
-            this.buttonNewMap.Size = new System.Drawing.Size(96, 25);
+            this.buttonNewMap.Size = new System.Drawing.Size(72, 20);
             this.buttonNewMap.TabIndex = 8;
             this.buttonNewMap.Text = "New Map";
             this.toolTip.SetToolTip(this.buttonNewMap, "Add new map");
@@ -120,9 +121,10 @@
             // 
             // buttonDeleteItem
             // 
-            this.buttonDeleteItem.Location = new System.Drawing.Point(143, 562);
+            this.buttonDeleteItem.Location = new System.Drawing.Point(107, 457);
+            this.buttonDeleteItem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonDeleteItem.Name = "buttonDeleteItem";
-            this.buttonDeleteItem.Size = new System.Drawing.Size(111, 23);
+            this.buttonDeleteItem.Size = new System.Drawing.Size(83, 19);
             this.buttonDeleteItem.TabIndex = 9;
             this.buttonDeleteItem.Text = "Delete Item";
             this.buttonDeleteItem.UseVisualStyleBackColor = true;
@@ -135,9 +137,10 @@
             this.listViewMap.HideSelectionMode = ComponentOwl.BetterListView.BetterListViewHideSelectionMode.KeepSelection;
             this.listViewMap.LabelEditActivation = ComponentOwl.BetterListView.BetterListViewLabelEditActivation.SingleClick;
             this.listViewMap.LabelEditModeItems = ComponentOwl.BetterListView.BetterListViewLabelEditMode.Text;
-            this.listViewMap.Location = new System.Drawing.Point(12, 44);
+            this.listViewMap.Location = new System.Drawing.Point(9, 36);
+            this.listViewMap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listViewMap.Name = "listViewMap";
-            this.listViewMap.Size = new System.Drawing.Size(279, 168);
+            this.listViewMap.Size = new System.Drawing.Size(208, 137);
             this.listViewMap.TabIndex = 10;
             this.listViewMap.AfterLabelEdit += new ComponentOwl.BetterListView.BetterListViewLabelEditEventHandler(this.ListViewMaps_AfterLabelEdit);
             this.listViewMap.SelectedIndexChanged += new System.EventHandler(this.ListViewMaps_SelectedIndexChanged);
@@ -147,13 +150,13 @@
             // 
             this.betterListViewColumnHeader1.Name = "betterListViewColumnHeader1";
             this.betterListViewColumnHeader1.Text = "Map Name";
-            this.betterListViewColumnHeader1.Width = 212;
+            this.betterListViewColumnHeader1.Width = 155;
             // 
             // betterListViewColumnHeader2
             // 
             this.betterListViewColumnHeader2.Name = "betterListViewColumnHeader2";
             this.betterListViewColumnHeader2.Text = "Saved";
-            this.betterListViewColumnHeader2.Width = 65;
+            this.betterListViewColumnHeader2.Width = 50;
             // 
             // listViewItem
             // 
@@ -163,9 +166,10 @@
             this.listViewItem.HideSelectionMode = ComponentOwl.BetterListView.BetterListViewHideSelectionMode.KeepSelection;
             this.listViewItem.LabelEditActivation = ComponentOwl.BetterListView.BetterListViewLabelEditActivation.SingleClick;
             this.listViewItem.LabelEditModeItems = ComponentOwl.BetterListView.BetterListViewLabelEditMode.Text;
-            this.listViewItem.Location = new System.Drawing.Point(12, 218);
+            this.listViewItem.Location = new System.Drawing.Point(9, 177);
+            this.listViewItem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listViewItem.Name = "listViewItem";
-            this.listViewItem.Size = new System.Drawing.Size(279, 341);
+            this.listViewItem.Size = new System.Drawing.Size(209, 277);
             this.listViewItem.TabIndex = 11;
             this.listViewItem.AfterLabelEdit += new ComponentOwl.BetterListView.BetterListViewLabelEditEventHandler(this.ListViewItem_AfterLabelEdit);
             this.listViewItem.SelectedIndexChanged += new System.EventHandler(this.ListViewItem_SelectedIndexChanged);
@@ -174,26 +178,26 @@
             // 
             this.betterListViewColumnHeader3.Name = "betterListViewColumnHeader3";
             this.betterListViewColumnHeader3.Text = "Name";
-            this.betterListViewColumnHeader3.Width = 129;
+            this.betterListViewColumnHeader3.Width = 87;
             // 
             // betterListViewColumnHeader4
             // 
             this.betterListViewColumnHeader4.Name = "betterListViewColumnHeader4";
             this.betterListViewColumnHeader4.Text = "X/Y Position";
-            this.betterListViewColumnHeader4.Width = 92;
+            this.betterListViewColumnHeader4.Width = 75;
             // 
             // betterListViewColumnHeader5
             // 
             this.betterListViewColumnHeader5.Name = "betterListViewColumnHeader5";
             this.betterListViewColumnHeader5.Text = "Layer";
-            this.betterListViewColumnHeader5.Width = 54;
+            this.betterListViewColumnHeader5.Width = 43;
             // 
             // MapTools
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(301, 649);
+            this.ClientSize = new System.Drawing.Size(226, 527);
             this.Controls.Add(this.listViewItem);
             this.Controls.Add(this.listViewMap);
             this.Controls.Add(this.buttonDeleteItem);
@@ -204,7 +208,7 @@
             this.Controls.Add(this.buttonFromFile);
             this.Controls.Add(this.buttonFromGrid);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MapTools";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MapTools";

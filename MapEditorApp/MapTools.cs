@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using ComponentOwl.BetterListView;
 
 namespace MapEditorApp
 {
     public partial class MapTools : Form
     {
-        List<Map> mapList = new List<Map>();
+        private MapEditor editor;
+        private Form uploadBox;
+        public List<Map> MapList { get; set; } = new List<Map>();
+
+        public BetterListViewSelectedIndexCollection MapIndex { get; private set; }
+        public BetterListViewSelectedIndexCollection ItemIndex { get; private set; }
+
+        string deleteConfirm = "Are you sure you want to delete ";
 
 
         public MapTools()
@@ -20,98 +23,123 @@ namespace MapEditorApp
             InitializeComponent();
         }
 
-        private void addMap()
+        public void SetEditor(MapEditor Editor)
         {
-            mapList.Add(new Map("Map " + mapList.Count + 1));
-            listViewMap.Items.Add(mapList.Last().GetListViewMap());
+            editor = Editor;
         }
 
-        private void deleteMap()
+        private void RefreshMaps()
         {
-            if (listViewMap.SelectedIndices.Count <= 0)
-                return;
-
-            mapList.RemoveAt(listViewMap.SelectedIndices[0]);
-
             listViewMap.Items.Clear();
-            foreach (Map map in mapList)
-                listViewMap.Items.Add(map.GetListViewMap());
+            foreach (Map map in MapList)
+                listViewMap.Items.Add(map.ListViewMap);
         }
 
-        public void addItem(Bitmap bitmap)
+        private void RefreshItems()
         {
-            if (listViewMap.SelectedItems.Count <= 0)
+            listViewItem.Items.Clear();
+            foreach (Item item in MapList[MapIndex[0]].ItemList)
+                listViewItem.Items.Add(item.ListViewItem);
+
+            editor.ListsChanged();
+        }
+
+        public void AddItem(Bitmap bitmap)
+        {
+            if (MapIndex.Count == 0 || MapIndex == null) { return; }
+
+            MapList[MapIndex[0]].ItemList.Add(new Item("Item ", MapList[MapIndex[0]].ItemList.Count, bitmap));
+            RefreshItems();
+
+            editor.ListsChanged();
+        }
+
+
+        private void ListViewMaps_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
+        {
+            MapList[MapIndex[0]].ChangeName(e.Label);
+        }
+
+        private void ListViewMaps_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MapIndex = listViewMap.SelectedIndices;
+
+            if (MapIndex == null || MapIndex.Count == 0) { return; }
+
+            RefreshItems();
+        }
+
+        private void ListViewItem_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
+        {
+            MapList[MapIndex[0]].ItemList[ItemIndex[0]].ChangeName(e.Label);
+        }
+
+        private void ListViewItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ItemIndex = listViewItem.SelectedIndices;
+        }
+
+        private void ButtonNewMap_Click(object sender, EventArgs e)
+        {
+            MapList.Add(new Map("Map " + (MapList.Count + 1)));
+            RefreshMaps();
+        }
+
+        private void ButtonDeleteMap_Click(object sender, EventArgs e)
+        {
+            if (MapIndex == null || MapIndex.Count == 0) { return; }
+
+            string mapName = MapList[listViewMap.SelectedIndices[0]].Name + "?";
+            var confirmResult = MessageBox.Show(deleteConfirm + mapName, "Delete " + mapName, MessageBoxButtons.YesNo);
+
+            if (confirmResult == DialogResult.Yes)
             {
-                //Let user know they haven't selected a map
-                return;
+                MapList.RemoveAt(listViewMap.SelectedIndices[0]);
+                RefreshMaps();
             }
-            int index = listViewMap.SelectedIndices[0];
-            int a = mapList[index].itemList.Count + 1;
-            mapList[index].itemList.Add(new Item("Item ", a, bitmap));
-            listViewItem.Items.Add(mapList[index].itemList.Last().GetListViewItem());
         }
 
-        private void deleteItem()
+        private void ButtonDeleteItem_Click(object sender, EventArgs e)
         {
+            if (MapIndex == null || listViewMap.SelectedIndices.Count == 0 || ItemIndex == null || ItemIndex.Count == 0) { return; }
 
+            string ItemName = MapList[MapIndex[0]].ItemList[ItemIndex[0]].Name + "?";
+            var confirmResult = MessageBox.Show("Are you sure you want to delete " + ItemName, "Delete " + ItemName, MessageBoxButtons.YesNo);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                MapList[MapIndex[0]].ItemList.RemoveAt(ItemIndex[0]);
+
+                for (int i = 1; i < MapList.Count; i++)
+                    MapList[MapIndex[0]].ItemList[i].ChangeLayer(i);
+
+                RefreshItems();
+            }
         }
 
-        private void addItemListing(Item ItemToList)
-        {
-            
-        }
-
-        private void listViewMap_AfterLabelEdit(object sender, LabelEditEventArgs e)
-        {
-            mapList[e.Item].Name = e.Label;
-        }
-
-        private void listViewItem_AfterLabelEdit(object sender, LabelEditEventArgs e)
-        {
-
-        }
-
-        private void buttonNewMap_Click(object sender, EventArgs e)
-        {
-            addMap();
-        }
-
-        private void buttonDeleteMap_Click(object sender, EventArgs e)
-        {
-            deleteMap();
-        }
-
-
-
-        private void listViewMap_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listViewMap_KeyDown(object sender, KeyEventArgs e)
+        private void ListViewMaps_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
-                deleteMap();
+                ButtonDeleteMap_Click(sender, e);
         }
 
-        private void listViewMap_ItemActivate(object sender, EventArgs e)
+        private void ButtonFromGrid_Click(object sender, EventArgs e)
         {
-            //could be the wrong trigger
-            listViewItem.Clear();
+            if (MapIndex == null || MapIndex.Count == 0) { return; }
 
-            foreach (Item item in mapList[listViewMap.SelectedIndices[0]].itemList)
-                listViewItem.Items.Add(item.GetListViewItem());
+            Form imageSelection = new ImageSelection();
+            imageSelection.MdiParent = Parent as MapEditorParent;
+            imageSelection.Owner = this;
+            imageSelection.Show();
         }
 
-        private void buttonFromGrid_Click(object sender, EventArgs e)
+        private void ButtonFromFile_Click(object sender, EventArgs e)
         {
-            if (mapList.Count > 0)
-            {
-                Form imageSelection = new ImageSelection();
-                imageSelection.MdiParent = Parent as MapEditorParent;
-                imageSelection.Owner = this;
-                imageSelection.Show();
-            }
+            if (MapIndex == null || MapIndex.Count == 0) { return; }
+
+            uploadBox = new UploadBox();
+            uploadBox.Owner = this;
+            uploadBox.Show();
         }
     }
 }

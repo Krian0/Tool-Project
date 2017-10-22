@@ -12,3 +12,20 @@ C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.cspr
 C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.csproj.CoreCompileInputs.cache
 C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\WindowsFormsApp1.exe
 C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\WindowsFormsApp1.exe.config
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\WindowsFormsApp1.exe
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.csprojResolveAssemblyReference.cache
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.ImageSelection.resources
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.MapEditor.resources
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.MapTools.resources
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.MapEditorParent.resources
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.UploadBox.resources
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.csproj.GenerateResource.Cache
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.csproj.CoreCompileInputs.cache
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\WindowsFormsApp1.exe
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\BetterListViewExpress.dll
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\BetterListViewExpress.pdb
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\BetterListViewExpress.xml

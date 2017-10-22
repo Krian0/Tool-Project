@@ -1,33 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace MapEditorApp
 {
-    class Map
+    public class Map
     {
-        public string Name { get; set; }
-        public bool Saved { get; set; }
-        public List<Item> itemList = new List<Item>();
+        public string Name { get; private set; }
+        public bool Saved { get; private set; }
+        public List<Item> ItemList { get; set; } = new List<Item>();
 
-        public Map(string MapName)
+        public Map(string mapName)
         {
-            Name = MapName;
+            Name = mapName;
             Saved = false;
         }
 
-        public ListViewItem GetListViewMap()
+        public void ChangeName(string name)
         {
-            ListViewItem MapListItem = new ListViewItem(Name);
-            if (Saved == false)
-                MapListItem.SubItems.Add("No");
-            else
-                MapListItem.SubItems.Add("Yes");
+            Name = name;
+        }
 
-            return MapListItem;
+        public void ChangeSaveStatus(bool saved)
+        {
+            Saved = saved;
+        }
+
+        public ComponentOwl.BetterListView.BetterListViewItem ListViewMap
+        {
+            get
+            {
+                ComponentOwl.BetterListView.BetterListViewItem MapListItem = new ComponentOwl.BetterListView.BetterListViewItem(Name);
+                if (Saved == false)
+                    MapListItem.SubItems.Add("No");
+                else
+                    MapListItem.SubItems.Add("Yes");
+
+                return MapListItem;
+            }
         }
     }
 }

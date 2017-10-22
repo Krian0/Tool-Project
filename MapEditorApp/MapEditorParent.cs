@@ -19,54 +19,48 @@ namespace MapEditorApp
         {
             InitializeComponent();
 
-            tool = new MapTools();
-            tool.MdiParent = this;
-            tool.Dock = DockStyle.Left;
+            tool = new MapTools()
+            {
+                MdiParent = this,
+                Dock = DockStyle.Left
+            };
             tool.Show();
 
-            editor = new MapEditor();
-            editor.MdiParent = this;
-            editor.Dock = DockStyle.Right;
+            editor = new MapEditor(tool as MapTools)
+            {
+                MdiParent = this,
+                Dock = DockStyle.Right,
+            };
             editor.Show();
+
+            (tool as MapTools).SetEditor(editor as MapEditor);
         }
 
         private void OpenFile(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                string FileName = openFileDialog.FileName;
-            }
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
+            //openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            //openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+            //if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            //{
+            //    string FileName = openFileDialog.FileName;
+            //}
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                string FileName = saveFileDialog.FileName;
-            }
+            //SaveFileDialog saveFileDialog = new SaveFileDialog();
+            //saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            //saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+            //if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+            //{
+            //    string FileName = saveFileDialog.FileName;
+            //}
         }
 
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
-        }
-
-        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+            Close();
         }
 
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -105,18 +99,13 @@ namespace MapEditorApp
                 childForm.Close();
         }
 
-        private void MapEditorParent_ResizeEnd(object sender, EventArgs e)
-        {
-            
-        }
-
         private void MapEditorParent_Resize(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Maximized && editor != null)
+            if (WindowState == FormWindowState.Maximized && editor != null)
                 editor.Width = Screen.GetWorkingArea(this).Width - (tool.Width + 4);
 
-            if (this.WindowState == FormWindowState.Normal)
-                editor.Width = this.Width - (tool.Width + 22);
+            if (WindowState == FormWindowState.Normal)
+                editor.Width = Width - (tool.Width + 22);
         }
     }
 }

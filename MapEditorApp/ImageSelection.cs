@@ -32,13 +32,15 @@ namespace MapEditorApp
             InitializeComponent();
             SwitchToGrid();
             areaSelected = false;
+            panel2.Controls.Add(pictureBoxImage);
 
             //Make picturesize workingspace size on maximize
         }
 
         //Used by UploadBox on closing to bring ImageSelection to front and draw selected file
-        public void OnUploadBoxClose()
+        public void OnUploadBoxClose(Image GivenImage)
         {
+            image = GivenImage;
             mainBit = new Bitmap(image);
             previewBit = new Bitmap(pictureBoxPreview.Width, pictureBoxPreview.Height);
             BringToFront();
@@ -46,25 +48,48 @@ namespace MapEditorApp
             panel2.AutoScroll = true;
             pictureBoxImage.SizeMode = PictureBoxSizeMode.AutoSize;
 
-            Draw(null);
+            SetUpDownBox(numericUpDown_Left, 0, image.Width -1, numericUpDown_Left.Value);
+            SetUpDownBox(numericUpDown_Top, 0, image.Height -1, numericUpDown_Top.Value);
+            SetUpDownBox(numericUpDown_Right, 1, image.Width, numericUpDown_Right.Value);
+            SetUpDownBox(numericUpDown_Bottom, 1, image.Height, numericUpDown_Bottom.Value);
+
+            Draw();
         }
 
         private Graphics SetGraphics(Bitmap bitmap)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
             return graphics;
         }
 
-        //Draw Grid/Custom Selection to PictureBoxImage. Takes an EventArgs parameter
-        private void Draw(EventArgs e)
+        //
+        private void SetUpDownBox(NumericUpDown UpDownBox, decimal Minimum, decimal Maximum, decimal value)
         {
-            if (image == null)
-                return;
+            UpDownBox.Minimum = Minimum;
+            UpDownBox.Maximum = Maximum;
+            UpDownBox.Value = (value < Minimum) ? Minimum : ((value > Maximum ? Maximum : value));
+            UpDownBox.Tag = value;
+        }
 
-            panel2.Controls.Add(pictureBoxImage);
+        //
+        private void ChangeValue(NumericUpDown Box, NumericUpDown Box2, bool Corner)
+        {
+            if (Box.Value == Box2.Value)
+                Box.Value = (Corner == false) ? Box.Value + 1 : Box.Value - 1;
+
+            if (Corner == false)
+                Box2.Minimum = Box.Value + 1;
+            else
+                Box2.Maximum = Box.Value - 1;
+        }
+
+        //Draw Grid/Custom Selection to PictureBoxImage. Takes an EventArgs parameter
+        private void Draw()
+        {
+            if (image == null) { return; }
 
             Graphics g = SetGraphics(mainBit);
             Graphics gP = SetGraphics(previewBit);
@@ -76,22 +101,11 @@ namespace MapEditorApp
             Pen gridPen = new Pen(Brushes.Black);
 
 
-            if (usingGrid == false)
+            if (usingGrid == true)
             {
-                PointF location = new PointF(Math.Min(mousePos.X, startPos.X), Math.Min(mousePos.Y, startPos.Y));
-                PointF extents = new PointF(Math.Max(mousePos.X, startPos.X), Math.Max(mousePos.Y, startPos.Y));
-
-                extents = new PointF(extents.X - location.X, extents.Y - location.Y);
-
-                selectedArea.Location = location;
-                selectedArea.Width = (extents.X < pictureBoxImage.Width - 2) ? extents.X : pictureBoxImage.Width;
-                selectedArea.Height = (extents.Y < pictureBoxImage.Height - 2) ? extents.Y : pictureBoxImage.Height;
-            }
-            else
-            {
-                for (float x = 0; x < pictureBoxImage.Width; x += (grid.Width + margin))
+                for (float x = 0; x < image.Width; x += (grid.Width + margin))
                 {
-                    for (float y = 0; y < pictureBoxImage.Height; y += (grid.Height + margin))
+                    for (float y = 0; y < image.Height; y += (grid.Height + margin))
                     {
                         g.DrawRectangle(gridPen, x, y, grid.Width, grid.Height);
 
@@ -100,6 +114,17 @@ namespace MapEditorApp
                             selectedArea = area;
                     }
                 }
+            }
+            else
+            {
+                PointF location = new PointF(Math.Min(mousePos.X, startPos.X), Math.Min(mousePos.Y, startPos.Y));
+                PointF extents = new PointF(Math.Max(mousePos.X, startPos.X), Math.Max(mousePos.Y, startPos.Y));
+
+                extents = new PointF(extents.X - location.X, extents.Y - location.Y);
+
+                selectedArea.Location = location;
+                selectedArea.Width = (extents.X < image.Width - 2) ? extents.X : image.Width;
+                selectedArea.Height = (extents.Y < image.Height - 2) ? extents.Y : image.Height;
             }
 
 
@@ -121,6 +146,7 @@ namespace MapEditorApp
             buttonCustom.BackColor = SystemColors.ControlLightLight;
             buttonGrid.BackColor = SystemColors.ActiveBorder;
             panelGridOptions.Visible = true;
+            panelCustomOptions.Visible = false;
             selectedArea = new RectangleF(new PointF(0, 0), grid);
 
             usingGrid = true;
@@ -132,6 +158,7 @@ namespace MapEditorApp
             buttonGrid.BackColor = SystemColors.ControlLightLight;
             buttonCustom.BackColor = SystemColors.ActiveBorder;
             panelGridOptions.Visible = false;
+            panelCustomOptions.Visible = true;
 
             usingGrid = false;
         }
@@ -145,104 +172,178 @@ namespace MapEditorApp
             if (usingGrid == false)
                 ButtonGrid_Click(sender, e);
 
-            uploadBox = new UploadBox();
-            uploadBox.Owner = this;
+            uploadBox = new UploadBox
+            {
+                Owner = this
+            };
             uploadBox.Show();
         }
 
         //
         private void PictureBoxImage_Click(object sender, EventArgs e)
         {
-            if (usingGrid == true && e.GetType() == typeof(MouseEventArgs))
-            {
-                mousePos = (e as MouseEventArgs).Location;
-                Draw(e);
-            }
+            if (usingGrid == false || e.GetType() != typeof(MouseEventArgs)) { return; }
+
+            mousePos = (e as MouseEventArgs).Location;
+            Draw();
         }
 
         //
         private void NumericUpDownWidth_ValueChanged(object sender, EventArgs e)
         {
             grid.Width = (float)numericUpDownWidth.Value;
-            Draw(e);
+            Draw();
         }
 
         //
         private void NumericUpDownHeight_ValueChanged(object sender, EventArgs e)
         {
             grid.Height = (float)numericUpDownHeight.Value;
-            Draw(e);
+            Draw();
         }
 
         //
         private void NumericUpDownMargin_ValueChanged(object sender, EventArgs e)
         {
             margin = (float)numericUpDownMargin.Value;
-            Draw(e);
+            Draw();
         }
 
         //
         private void ButtonGrid_Click(object sender, EventArgs e)
         {
             SwitchToGrid();
-            Draw(e);
+            Draw();
         }
 
         //
         private void ButtonCustom_Click(object sender, EventArgs e)
         {
             SwitchToCustom();
-            Draw(e);
+            Draw();
         }
 
         //
         private void PictureBoxImage_MouseDown(object sender, MouseEventArgs e)
         {
-            if (usingGrid == false)
-            {
-                startPos = (e as MouseEventArgs).Location;
-                pictureBoxImage.Invalidate();
-                areaSelected = false;
-                Draw(e);
-            }
+            if (usingGrid == true) { return; }
+
+            startPos = (e as MouseEventArgs).Location;
+            pictureBoxImage.Invalidate();
+            areaSelected = false;
+            Draw();
         }
 
         //
         private void PictureBoxImage_MouseUp(object sender, MouseEventArgs e)
         {
-            if (usingGrid == false)
-            {
-                mousePos = (e as MouseEventArgs).Location;
-                pictureBoxImage.Invalidate();
-                areaSelected = true;
-                Draw(e);
-            }
+            if (usingGrid == true) { return; }
+
+            mousePos = (e as MouseEventArgs).Location;
+            pictureBoxImage.Invalidate();
+
+            //Set NumericUpDown Min/Max to image size to avoid issues with setting the value and set the Value to the correct float.
+            SetUpDownBox(numericUpDown_Left, 0, image.Width, (decimal)Math.Min(mousePos.X, startPos.X));
+            SetUpDownBox(numericUpDown_Top, 0, image.Height, (decimal)Math.Min(mousePos.Y, startPos.Y));
+            SetUpDownBox(numericUpDown_Right, 0, image.Width, (decimal)Math.Max(mousePos.X, startPos.X));
+            SetUpDownBox(numericUpDown_Bottom, 0, image.Height, (decimal)Math.Max(mousePos.Y, startPos.Y));
+
+            //Reset Min/Max to the proper values.
+            SetUpDownBox(numericUpDown_Left, 0, numericUpDown_Right.Value - 1, numericUpDown_Left.Value);
+            SetUpDownBox(numericUpDown_Top, 0, numericUpDown_Bottom.Value - 1, numericUpDown_Top.Value);
+            SetUpDownBox(numericUpDown_Right, numericUpDown_Left.Value + 1, image.Width, numericUpDown_Right.Value);
+            SetUpDownBox(numericUpDown_Bottom, numericUpDown_Top.Value + 1, image.Height, numericUpDown_Bottom.Value);
+
+            areaSelected = true;
+            Draw();
         }
 
         //
         private void PictureBoxImage_MouseMove(object sender, MouseEventArgs e)
         {
-            if (usingGrid == false && e.Button == MouseButtons.Left)
-            {
-                mousePos = (e as MouseEventArgs).Location;
-                pictureBoxImage.Invalidate();
-                Draw(e);
-            }
+            if (usingGrid == true || e.Button != MouseButtons.Left) { return; }
+
+            mousePos = (e as MouseEventArgs).Location;
+            pictureBoxImage.Invalidate();
+            Draw();
+        }
+
+        private void ButtonAddItem_Click(object sender, EventArgs e)
+        {
+            if (image == null) { return; }
+
+            RectangleF dest = new RectangleF(0, 0, selectedArea.Width, selectedArea.Height);
+            Bitmap bitmap = new Bitmap((int)dest.Width, (int)dest.Height);
+            Graphics g = Graphics.FromImage(bitmap);
+            g.DrawImage(image, dest, selectedArea, GraphicsUnit.Pixel);
+            g.Dispose();
+
+            (Owner as MapTools).AddItem(bitmap);
+        }
+
+        private void NumericUpDown_Left_ValueChanged(object sender, EventArgs e)
+        {
+            if (areaSelected == false) { return; }
+
+            ChangeValue(numericUpDown_Left, numericUpDown_Right, false);
+
+            if (startPos.X < mousePos.X)
+                startPos.X = (float)numericUpDown_Left.Value;
+            else
+                mousePos.X = (float)numericUpDown_Left.Value;
+
+            numericUpDown_Left.Tag = numericUpDown_Left.Value;
+
+            Draw();
+        }
+
+        private void NumericUpDown_Top_ValueChanged(object sender, EventArgs e)
+        {
+            if (areaSelected == false) { return; }
+
+            ChangeValue(numericUpDown_Top, numericUpDown_Bottom, false);
+
+            if (startPos.Y < mousePos.Y)
+                startPos.Y = (float)numericUpDown_Top.Value;
+            else
+                mousePos.Y = (float)numericUpDown_Top.Value;
+
+            numericUpDown_Top.Tag = numericUpDown_Top.Value;
+
+            Draw();
+        }
+
+        private void NumericUpDown_Right_ValueChanged(object sender, EventArgs e)
+        {
+            if (areaSelected == false) { return; }
+
+            ChangeValue(numericUpDown_Right, numericUpDown_Left, true);
+
+            if (mousePos.X > startPos.X)
+                mousePos.X = (float)numericUpDown_Right.Value;
+            else
+                startPos.X = (float)numericUpDown_Right.Value;
+
+            numericUpDown_Right.Tag = numericUpDown_Right.Value;
+
+            Draw();
+        }
+
+        private void NumericUpDown_Bottom_ValueChanged(object sender, EventArgs e)
+        {
+            if (areaSelected == false) { return; }
+
+            ChangeValue(numericUpDown_Bottom, numericUpDown_Top, true);
+
+            if (mousePos.Y > startPos.Y)
+                mousePos.Y = (float)numericUpDown_Bottom.Value;
+            else
+                startPos.Y = (float)numericUpDown_Bottom.Value;
+
+            numericUpDown_Bottom.Tag = numericUpDown_Bottom.Value;
+
+            Draw();
         }
         #endregion
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (selectedArea.Width > 0 && selectedArea.Height > 0)
-            {
-                // An empty bitmap which will hold the cropped image
-                Bitmap bitmap = new Bitmap((int)selectedArea.Width, (int)selectedArea.Height);
-
-                Graphics g = Graphics.FromImage(bitmap);
-                g.DrawImage(mainBit, 0, 0, selectedArea, GraphicsUnit.Pixel);
-
-                (Owner as MapTools).addItem(bitmap);
-            }
-        }
     }
 }

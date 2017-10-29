@@ -14,26 +14,59 @@ namespace MapEditorApp
     {
         Form tool;
         Form editor;
+        Form selector;
 
         public MapEditorParent()
         {
             InitializeComponent();
 
-            tool = new MapTools()
+            tool = new MapTools(this)
             {
                 MdiParent = this,
-                Dock = DockStyle.Left
+                TopLevel = false,
+                AutoScroll = true,
+                Dock = DockStyle.Fill
             };
+            panelTools.Controls.Add(tool);
             tool.Show();
 
             editor = new MapEditor(tool as MapTools)
             {
                 MdiParent = this,
-                Dock = DockStyle.Right,
+                TopLevel = false,
+                AutoScroll = true,
+                Dock = DockStyle.Fill,
             };
+            editor.Dock = DockStyle.Fill;
+            AddNewTab(editor);
             editor.Show();
 
+            selector = new ImageSelection(tool as MapTools)
+            {
+                MdiParent = Parent as MapEditorParent,
+                TopLevel = false,
+                AutoScroll = true,
+                Dock = DockStyle.Fill
+            };
+            AddNewTab(selector);
+            selector.Show();
+
             (tool as MapTools).SetEditor(editor as MapEditor);
+            tabControl.SelectedTab = tabControl.TabPages[0];
+        }
+
+        public void AddNewTab(Form form)
+        {
+            TabPage tab = new TabPage(form.Text);
+
+            form.TopLevel = false;
+            form.Parent = tab;
+            form.Visible = true;
+
+            tabControl.TabPages.Add(tab);
+            form.Location = new Point((tab.Width - form.Width) / 2, (tab.Height - form.Height) / 2);
+
+            tabControl.SelectedTab = tab;
         }
 
         private void OpenFile(object sender, EventArgs e)
@@ -102,10 +135,10 @@ namespace MapEditorApp
         private void MapEditorParent_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Maximized && editor != null)
-                editor.Width = Screen.GetWorkingArea(this).Width - (tool.Width + 4);
+                tabControl.Width = Screen.GetWorkingArea(this).Width - (tool.Width + 4);
 
             if (WindowState == FormWindowState.Normal)
-                editor.Width = Width - (tool.Width + 22);
+                tabControl.Width = Width - (tool.Width + 22);
         }
     }
 }

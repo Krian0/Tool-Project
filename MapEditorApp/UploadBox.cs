@@ -63,7 +63,10 @@ namespace MapEditorApp
             if (Owner.GetType() == typeof(ImageSelection))
                 (Owner as ImageSelection).OnUploadBoxClose(Image.FromFile(path));
             else
+            {
                 (Owner as MapTools).AddItem(new Bitmap(Image.FromFile(path)));
+                (Owner as MapTools).uploadBox = null;
+            }
 
             Close();
         }

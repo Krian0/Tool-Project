@@ -15,28 +15,46 @@ namespace MapEditorApp
     {
         private MapTools t;
         private Bitmap bitmap;
-        private PointF midPoint;
-        private int lastCount;
-        private bool updatePictureBox;
+        private RectangleF position;
+        private GridObject Grid;
+        public bool drawGrid;
 
         public MapEditor(MapTools Tools)
         {
             InitializeComponent();
             t = Tools;
             bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
-            midPoint = new PointF(pictureBox.Width / 2, pictureBox.Height / 2);
+            drawGrid = false;
         }
 
-        public void ListsChanged()
+        public void Draw()
         {
-            updatePictureBox = false;
+            if (t.MapIndex == -1) { pictureBox.Image = null; return; }
 
-            if (t.MapIndex == null || t.MapIndex.Count == 0 || t.ItemIndex == null || t.ItemIndex.Count == 0) { return; }
+            Graphics g = SetGraphics(bitmap);
+            g.Clear(Color.White);
 
-            if (t.MapList[t.ItemIndex[0]].ItemList.Count == lastCount) { return; }
+            //Map map = t.CurrentMap();
+            //for (int i = 0; i < map.GetItemCount(); i++)
+            //    g.DrawImage(map.GetItemImage(i), map.GetItemPos(i));
 
-            lastCount = t.MapList[t.ItemIndex[0]].ItemList.Count;
-            updatePictureBox = true;
+            //if (t.CurrentMap().ItemIndex > -1)
+            //    g.DrawRectangle(new Pen(Brushes.LightSeaGreen, 2), position);
+
+            Size Grid = t.CurrentMap().gridSize;
+            
+
+
+
+            if (drawGrid == true)
+            {
+                for (int x = 0; x < pictureBox.Width; x += Grid.Width)
+                    for (int y = 0; y < pictureBox.Height; y += Grid.Height)
+                        g.DrawRectangle(new Pen(Brushes.Gray), x, y, Grid.Width, Grid.Height);
+            }
+
+            g.Dispose();
+            pictureBox.Image = bitmap;
         }
 
         private Graphics SetGraphics(Bitmap bitmap)
@@ -48,32 +66,64 @@ namespace MapEditorApp
             return graphics;
         }
 
+        public void SetupMap(Size MapSize, Size GridSize)
+        {
+            pictureBox.Size = MapSize;
+            Grid = new GridObject(GridSize, pictureBox.Size);
+        }
+
+        public Point GetClickedGrid()
+        {
+            Size Grid = t.CurrentMap().gridSize;
+
+            int x = (int)Math.Floor(position.X / Grid.Width);
+            int y = (int)Math.Floor(position.Y / Grid.Height);
+            x *= Grid.Width;
+            y *= Grid.Height;
+
+            return new Point(x, y);
+        }
+
 
         private void PictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.GetType() != typeof(MouseEventArgs) || e.Button != MouseButtons.Left || t.ItemIndex.Count == 0) { return; }
+            if (t.MapIndex == -1 || t.ItemIndex == -1) { return; }
+            if (e.Button != MouseButtons.Left || position.Contains((e as MouseEventArgs).Location) == false) { return; }
 
-            t.MapList[t.MapIndex[0]].ItemList[t.ItemIndex[0]].ChangePos((e as MouseEventArgs).Location);
-            pictureBox.Invalidate();
+
+
+            //for (int x = 0; x < pictureBox.Width; x += Grid.Width)
+            //{
+            //    for (int y = 0; y < pictureBox.Height; y += Grid.Height)
+            //    {
+            //        Rectangle R = new Rectangle(x, y, Grid.Width, Grid.Height);
+            //        if (R.Contains((int)position.X, (int)position.Y) == true)
+            //            ;
+            //    }
+            //}
         }
 
-        private void PictureBox_Paint(object sender, PaintEventArgs e)
+        private void PictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            if (t.MapIndex == null || t.MapIndex.Count == 0) { return; }
+            if (t.MapIndex == -1 || t.ItemIndex == -1) { return; }
 
-            Graphics g = SetGraphics(bitmap);
-            g.Clear(Color.White);
-            foreach (Item item in t.MapList[t.MapIndex[0]].ItemList)
-                g.DrawImage(item.Image, item.Pos);
+            position.X = (position.X < 0) ? 0 : position.X;
+            position.Y = (position.Y < 0) ? 0 : position.Y;
+            position.X = (position.Right > pictureBox.Width) ? pictureBox.Width - position.Width : position.X;
+            position.Y = (position.Bottom > pictureBox.Height) ? pictureBox.Height - position.Height : position.Y;
 
-            pictureBox.Image = bitmap;
+            //t.CurrentMap().SetItemPos(position.Location);
+            Draw();
         }
 
         private void PictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (updatePictureBox == false) { return; }
+            if (t.MapIndex == -1 || t.ItemIndex == -1 || e.Button != MouseButtons.Left) { return; }
 
-            pictureBox.Invalidate();
+            position.Location = (e as MouseEventArgs).Location;
+
+            //t.CurrentMap().SetItemPos(position.Location);
+            Draw();
         }
     }
 }

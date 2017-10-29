@@ -79,7 +79,7 @@
             this.panel1.Controls.Add(this.buttonGrid);
             this.panel1.Controls.Add(this.buttonNewImage);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(1348, 0);
+            this.panel1.Location = new System.Drawing.Point(1167, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(320, 774);
@@ -140,7 +140,6 @@
             // 
             // numericUpDown_Bottom
             // 
-            this.numericUpDown_Bottom.DecimalPlaces = 2;
             this.numericUpDown_Bottom.Location = new System.Drawing.Point(18, 92);
             this.numericUpDown_Bottom.Maximum = new decimal(new int[] {
             99999,
@@ -154,7 +153,6 @@
             // 
             // numericUpDown_Top
             // 
-            this.numericUpDown_Top.DecimalPlaces = 2;
             this.numericUpDown_Top.Location = new System.Drawing.Point(18, 32);
             this.numericUpDown_Top.Maximum = new decimal(new int[] {
             99999,
@@ -176,7 +174,6 @@
             // 
             // numericUpDown_Right
             // 
-            this.numericUpDown_Right.DecimalPlaces = 2;
             this.numericUpDown_Right.Location = new System.Drawing.Point(18, 61);
             this.numericUpDown_Right.Maximum = new decimal(new int[] {
             99999,
@@ -190,7 +187,6 @@
             // 
             // numericUpDown_Left
             // 
-            this.numericUpDown_Left.DecimalPlaces = 2;
             this.numericUpDown_Left.Location = new System.Drawing.Point(18, 0);
             this.numericUpDown_Left.Maximum = new decimal(new int[] {
             99999,
@@ -337,7 +333,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1343, 774);
+            this.panel2.Size = new System.Drawing.Size(1167, 774);
             this.panel2.TabIndex = 1;
             // 
             // pictureBoxImage
@@ -346,7 +342,7 @@
             this.pictureBoxImage.Location = new System.Drawing.Point(4, 2);
             this.pictureBoxImage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxImage.Name = "pictureBoxImage";
-            this.pictureBoxImage.Size = new System.Drawing.Size(1340, 772);
+            this.pictureBoxImage.Size = new System.Drawing.Size(1159, 772);
             this.pictureBoxImage.TabIndex = 0;
             this.pictureBoxImage.TabStop = false;
             this.pictureBoxImage.Click += new System.EventHandler(this.PictureBoxImage_Click);
@@ -359,11 +355,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.ClientSize = new System.Drawing.Size(1668, 774);
+            this.ClientSize = new System.Drawing.Size(1487, 774);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "ImageSelection";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "ImageSelection";
             this.panel1.ResumeLayout(false);
             this.panelCustomOptions.ResumeLayout(false);

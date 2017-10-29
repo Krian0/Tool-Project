@@ -3,121 +3,132 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using ComponentOwl.BetterListView;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
-//NOTE: If BetterListView is not working or has a red squiggle, it can be downloaded at 
-//[ https://visualstudiogallery.msdn.microsoft.com/f46bc2cb-9ba3-4ad6-91fd-55f0eadba6ea/view/Reviews ]
+//NOTE:
+//If BetterListView is not working, it can be downloaded at https://visualstudiogallery.msdn.microsoft.com/f46bc2cb-9ba3-4ad6-91fd-55f0eadba6ea/view/Reviews
 
 namespace MapEditorApp
 {
     public partial class MapTools : Form
     {
-        private MapEditor editor;
-        private Form uploadBox;
+        private MapEditor ed = null;
+        public Form uploadBox = null;
+        public Form setMap = null;
+
         public List<Map> MapList { get; set; } = new List<Map>();
+        public List<Item> Items { get; set; } = new List<Item>();
 
-        public BetterListViewSelectedIndexCollection MapIndex { get; private set; }
-        public BetterListViewSelectedIndexCollection ItemIndex { get; private set; }
+        public int MapIndex { get; private set; } = -1;
+        public int ItemIndex { get; private set; } = -1;
 
-        string deleteConfirm = "Are you sure you want to delete ";
+        string deleteText = "Are you sure you want to delete ";
 
-
-        public MapTools()
+        public MapTools(MapEditorParent ToolParent)
         {
             InitializeComponent();
         }
 
+
+#region MapTool Functions
         public void SetEditor(MapEditor Editor)
         {
-            editor = Editor;
+            ed = Editor;
         }
 
-        private void RefreshMaps()
+        public Map CurrentMap()
         {
-            listViewMap.Items.Clear();
-            foreach (Map map in MapList)
-                listViewMap.Items.Add(map.ListViewMap);
+            if (MapIndex == -1) { return null; }
+            return MapList[MapIndex];
         }
 
-        private void RefreshItems()
+        public void MapSetup(int MWidth, int MHeight, int GWidth, int GHeight)
         {
-            listViewItem.Items.Clear();
-            foreach (Item item in MapList[MapIndex[0]].ItemList)
-                listViewItem.Items.Add(item.ListViewItem);
+            Size M = new Size(MWidth, MHeight);
+            Size G = new Size(GWidth, GHeight);
 
-            editor.ListsChanged();
+            MapList[MapIndex].mapSize = M;
+            MapList[MapIndex].gridSize = G;
+            numericUpDownWidth.Value = GWidth;
+            numericUpDownHeight.Value = GHeight;
+
+            ed.SetupMap(M, G);
         }
 
-        public void AddItem(Bitmap bitmap)
+        public void AddItem(Image ItemImage)
         {
-            if (MapIndex.Count == 0 || MapIndex == null) { return; }
+            int newItemIndex = Items.Count;
 
-            MapList[MapIndex[0]].AddItem(bitmap);
-            RefreshItems();
+            Items.Add(new Item("Item ", ItemImage));
+            listViewItem.Items.Add(new BetterListViewItem(Items[newItemIndex].name, newItemIndex));
 
-            editor.ListsChanged();
+            listViewItem.Items[newItemIndex].Selected = true;
+
+            ImageList ImageList = new ImageList { ImageSize = new Size(50, 50) };
+
+            for (int i = 0; i < newItemIndex + 1; i++)
+                ImageList.Images.Add(GetThumbnail(Items[i].image));
+
+            listViewItem.ImageList = ImageList;
+            ed.Draw();
         }
 
-
-        private void ListViewMaps_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
+        public Bitmap GetThumbnail(Image Image, int Size = 50)
         {
-            MapList[MapIndex[0]].ChangeName(e.Label);
-        }
+            int Width, Height, X, Y;
 
+            if (Image.Width >= Image.Height)
+            {
+                Width = Size;
+                Height = (int)(Width / ((double)Image.Width / Image.Height));
+            }
+            else
+            {
+                Height = Size;
+                Width = (int)(Height * ((double)Image.Width / Image.Height));
+            }
+
+            X = (Size - Width) / 2;
+            Y = (Size - Height) / 2;
+
+            Bitmap thumb = new Bitmap(Size, Size, PixelFormat.Format24bppRgb);
+
+            Graphics g = Graphics.FromImage(thumb);
+            g.Clear(Color.White);
+            g.InterpolationMode = InterpolationMode.High;
+            g.DrawImage(Image, new Rectangle(X, Y, Width, Height), new Rectangle(0, 0, Image.Width, Image.Height), GraphicsUnit.Pixel);
+
+            return thumb;
+        }
+        #endregion
+
+
+#region MapTools Actions
         private void ListViewMaps_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MapIndex = listViewMap.SelectedIndices;
+            if (listViewMap.SelectedIndices.Count < 1) { MapIndex = -1; return; }
 
-            if (MapIndex == null || MapIndex.Count == 0) { return; }
-
-            RefreshItems();
-        }
-
-        private void ListViewItem_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
-        {
-            MapList[MapIndex[0]].ItemList[ItemIndex[0]].ChangeName(e.Label);
+            MapIndex = listViewMap.SelectedIndices[0];
+            ed.Draw();
         }
 
         private void ListViewItem_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ItemIndex = listViewItem.SelectedIndices;
+            if (listViewItem.SelectedIndices.Count < 1) { ItemIndex = -1; return; }
+
+            ItemIndex = listViewItem.SelectedIndices[0];
+            ed.Draw();
         }
 
-        private void ButtonNewMap_Click(object sender, EventArgs e)
+        private void ListViewMaps_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
         {
-            MapList.Add(new Map("Map " + (MapList.Count + 1)));
-            RefreshMaps();
+            MapList[MapIndex].name = e.Label;
         }
 
-        private void ButtonDeleteMap_Click(object sender, EventArgs e)
+        private void ListViewItem_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
         {
-            if (MapIndex == null || MapIndex.Count == 0) { return; }
-
-            string mapName = MapList[listViewMap.SelectedIndices[0]].Name + "?";
-            var confirmResult = MessageBox.Show(deleteConfirm + mapName, "Delete " + mapName, MessageBoxButtons.YesNo);
-
-            if (confirmResult == DialogResult.Yes)
-            {
-                MapList.RemoveAt(listViewMap.SelectedIndices[0]);
-                RefreshMaps();
-            }
-        }
-
-        private void ButtonDeleteItem_Click(object sender, EventArgs e)
-        {
-            if (MapIndex == null || listViewMap.SelectedIndices.Count == 0 || ItemIndex == null || ItemIndex.Count == 0) { return; }
-
-            string ItemName = MapList[MapIndex[0]].ItemList[ItemIndex[0]].Name + "?";
-            var confirmResult = MessageBox.Show("Are you sure you want to delete " + ItemName, "Delete " + ItemName, MessageBoxButtons.YesNo);
-
-            if (confirmResult == DialogResult.Yes)
-            {
-                MapList[MapIndex[0]].ItemList.RemoveAt(ItemIndex[0]);
-
-                for (int i = 1; i < MapList.Count; i++)
-                    MapList[MapIndex[0]].ItemList[i].ChangeLayer(i);
-
-                RefreshItems();
-            }
+            Items[ItemIndex].name = e.Label;
         }
 
         private void ListViewMaps_KeyDown(object sender, KeyEventArgs e)
@@ -126,23 +137,79 @@ namespace MapEditorApp
                 ButtonDeleteMap_Click(sender, e);
         }
 
-        private void ButtonFromGrid_Click(object sender, EventArgs e)
+        private void ButtonNewMap_Click(object sender, EventArgs e)
         {
-            if (MapIndex == null || MapIndex.Count == 0) { return; }
+            if (setMap != null) { return; }
 
-            Form imageSelection = new ImageSelection();
-            imageSelection.MdiParent = Parent as MapEditorParent;
-            imageSelection.Owner = this;
-            imageSelection.Show();
+            MapList.Add(new Map("Map " + (MapList.Count + 1)));
+            listViewMap.Items.Add("Map " + (MapList.Count));
+            listViewMap.Items[(MapList.Count - 1)].Selected = true;
+
+            setMap = new SetMap(this);
+            setMap.Show();
+            ed.Draw();
+        }
+
+        private void ButtonDeleteMap_Click(object sender, EventArgs e)
+        {
+            if (MapIndex == -1) { return; }
+
+            int Count = MapList.Count;
+
+            string Name = MapList[MapIndex].name + "?";
+            var confirmResult = MessageBox.Show(Parent, deleteText + Name, "Delete " + Name, MessageBoxButtons.YesNo);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                MapList.RemoveAt(MapIndex);
+                listViewMap.Items.RemoveAt(MapIndex);
+                if (Count > 1)
+                    listViewMap.Items[Count - 1].Selected = true;
+                else
+                    MapIndex = -1;
+                ed.Draw();
+            }
+        }
+
+        private void ButtonDeleteItem_Click(object sender, EventArgs e)
+        {
+            if (ItemIndex == -1) { return; }
+
+            int Count = Items.Count;
+
+            string Name = Items[ItemIndex].name + "?";
+            var confirmResult = MessageBox.Show(Parent, deleteText + Name, "Delete " + Name, MessageBoxButtons.YesNo);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                Items.RemoveAt(ItemIndex);
+                listViewItem.Items.RemoveAt(ItemIndex);
+                if (Count > 1)
+                    listViewItem.Items[Count - 1].Selected = true;
+                else
+                    ItemIndex = -1;
+            }
         }
 
         private void ButtonFromFile_Click(object sender, EventArgs e)
         {
-            if (MapIndex == null || MapIndex.Count == 0) { return; }
-
-            uploadBox = new UploadBox();
-            uploadBox.Owner = this;
+            if (uploadBox != null) { return; }
+            uploadBox = new UploadBox() { Owner = this };
             uploadBox.Show();
         }
+
+        private void ButtonViewGrid_Click(object sender, EventArgs e)
+        {
+            if (MapIndex == -1) { return; }
+
+            if (ed.drawGrid == true)
+                buttonViewGrid.Text = "Show Grid";
+            else
+                buttonViewGrid.Text = "Hide Grid";
+
+            ed.drawGrid = !ed.drawGrid;
+            ed.Draw();
+        }
+#endregion
     }
 }

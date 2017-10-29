@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ComponentOwl.BetterListView;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -8,48 +9,30 @@ namespace MapEditorApp
     {
         //Remove use of itemlist in maptools, provide methods here!!!
 
-        public string Name { get; private set; }
-        public bool Saved { get; private set; }
-        public List<Item> ItemList { get; set; } = new List<Item>();
+        public string name;
+        public bool saved;
+        public Size mapSize;
+        public Size gridSize;
 
+        public BetterListViewItem ListViewMap { get { return ListMap(new BetterListViewItem(name)); } }
+
+
+        #region Map List Functions
         public Map(string mapName)
         {
-            Name = mapName;
-            Saved = false;
+            name = mapName;
+            saved = false;
         }
 
-        public void ChangeName(string name)
+        private BetterListViewItem ListMap(BetterListViewItem Item)
         {
-            Name = name;
+            if (saved == false)
+                Item.SubItems.Add("No");
+            else
+                Item.SubItems.Add("Yes");
+
+            return Item;
         }
-
-        public void ChangeSaveStatus(bool saved)
-        {
-            Saved = saved;
-        }
-
-        public void AddItem(Bitmap bitmap)
-        {
-            ItemList.Add(new Item("Item ", ItemList.Count, bitmap));
-        }
-
-        public void ChangeItemName()
-        {
-
-        }
-
-        public ComponentOwl.BetterListView.BetterListViewItem ListViewMap
-        {
-            get
-            {
-                ComponentOwl.BetterListView.BetterListViewItem MapListItem = new ComponentOwl.BetterListView.BetterListViewItem(Name);
-                if (Saved == false)
-                    MapListItem.SubItems.Add("No");
-                else
-                    MapListItem.SubItems.Add("Yes");
-
-                return MapListItem;
-            }
-        }
+        #endregion
     }
 }

@@ -26,6 +26,7 @@ C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEd
 C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.csproj.CoreCompileInputs.cache
 C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\WindowsFormsApp1.exe
 C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\WindowsFormsApp1.pdb
-C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\BetterListViewExpress.dll
-C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\BetterListViewExpress.pdb
-C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\BetterListViewExpress.xml
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\betterlistviewexpress-net30.dll
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\betterlistviewexpress-net30.pdb
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\betterlistviewexpress-net30.xml
+C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.SetMap.resources

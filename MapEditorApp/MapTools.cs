@@ -18,118 +18,162 @@ namespace MapEditorApp
         public Form setMap = null;
 
         public List<Map> MapList { get; set; } = new List<Map>();
-        public List<Item> Items { get; set; } = new List<Item>();
+        public List<Tile> paintTiles = new List<Tile>();
 
         public int MapIndex { get; private set; } = -1;
-        public int ItemIndex { get; private set; } = -1;
+        public int LayerIndex { get; private set; } = -1;
+        public int PaintIndex { get; private set; } = -1;
+
+        public bool PaintTileSelected { get; private set; } = false;
+        public Rectangle SelectedTile { get; private set; } = new Rectangle(0, 0, 0, 0);
+        private Rectangle TempSelection = new Rectangle(0, 0, 0, 0);
+        private Point nextFreeTile = new Point(0, 0);
+        private Point paintPreviewSize = new Point(50, 50);
 
         string deleteText = "Are you sure you want to delete ";
+        private int MapCount = 0;
+
+        private Bitmap displayImage;
 
         public MapTools(MapEditorParent ToolParent)
         {
             InitializeComponent();
+
+            panel1.HorizontalScroll.Enabled = true;
+            pictureItems.Size = new Size(panel1.Size.Width + 20, panel1.Size.Height - 21);
+            panel1.Controls.Add(pictureItems);
+
+            displayImage = new Bitmap(paintPreviewSize.X * 10, paintPreviewSize.Y * 6);
         }
 
 
-#region MapTool Functions
+        #region MapTool Functions
         public void SetEditor(MapEditor Editor)
         {
             ed = Editor;
+            Draw();
         }
 
-        public Map CurrentMap()
+        public void MapSetup(Size MapSize, Size GridSize, int TilesWide, int TilesHigh)
         {
-            if (MapIndex == -1) { return null; }
-            return MapList[MapIndex];
+            int NewIndex = MapList.Count - 1;
+
+            MapList[NewIndex].mapSize = MapSize;
+            MapList[NewIndex].gridSize = GridSize;
+            MapList[NewIndex].tiles = new Tile[TilesWide, TilesHigh];
+
+            if (MapIndex != -1)
+                listViewMap.Items[MapIndex].Selected = false;
+            listViewMap.Items[NewIndex].Selected = true;
+
+            ed.SetPictureBox(MapSize, GridSize);
+            AddLayer(MapList.Count - 1);
         }
 
-        public void MapSetup(int MWidth, int MHeight, int GWidth, int GHeight)
+        public void AddLayer(int Map_Index)
         {
-            Size M = new Size(MWidth, MHeight);
-            Size G = new Size(GWidth, GHeight);
+            Size MapSize = MapList[Map_Index].mapSize;
+            Bitmap image = new Bitmap(MapSize.Width, MapSize.Height);
 
-            MapList[MapIndex].mapSize = M;
-            MapList[MapIndex].gridSize = G;
-            numericUpDownWidth.Value = GWidth;
-            numericUpDownHeight.Value = GHeight;
+            Graphics g = Graphics.FromImage(image);
+            g.Clear(Color.Transparent);
+            g.Dispose();
 
-            ed.SetupMap(M, G);
+            MapList[Map_Index].layers.Add(image);
+            listViewLayers.Items.Add("Layer " + MapList[Map_Index].LayerCount++);
+
+            if (LayerIndex != -1)
+                listViewLayers.Items[LayerIndex].Selected = false;
+            listViewLayers.Items[MapList[Map_Index].layers.Count - 1].Selected = true;
         }
 
         public void AddItem(Image ItemImage)
         {
-            int newItemIndex = Items.Count;
-
-            Items.Add(new Item("Item ", ItemImage));
-            listViewItem.Items.Add(new BetterListViewItem(Items[newItemIndex].name, newItemIndex));
-
-            listViewItem.Items[newItemIndex].Selected = true;
-
-            ImageList ImageList = new ImageList { ImageSize = new Size(50, 50) };
-
-            for (int i = 0; i < newItemIndex + 1; i++)
-                ImageList.Images.Add(GetThumbnail(Items[i].image));
-
-            listViewItem.ImageList = ImageList;
+            paintTiles.Add(new Tile(ItemImage, true, new Rectangle(nextFreeTile, ItemImage.Size)));
+            nextFreeTile.X = nextFreeTile.X + ItemImage.Size.Width;
+            Draw();
             ed.Draw();
         }
 
-        public Bitmap GetThumbnail(Image Image, int Size = 50)
+        public void Draw()
         {
-            int Width, Height, X, Y;
+            Graphics g = Graphics.FromImage(displayImage);
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.Clear(Color.Transparent);
 
-            if (Image.Width >= Image.Height)
-            {
-                Width = Size;
-                Height = (int)(Width / ((double)Image.Width / Image.Height));
-            }
-            else
-            {
-                Height = Size;
-                Width = (int)(Height * ((double)Image.Width / Image.Height));
-            }
+            //Draw paintable tiles
+            for (int i = 0; i < paintTiles.Count; i++)
+                g.DrawImage(paintTiles[i].image, paintTiles[i].tileRect.Location);
 
-            X = (Size - Width) / 2;
-            Y = (Size - Height) / 2;
+            //Draw grid
+            for (float x = 0; x < pictureItems.Width; x += paintPreviewSize.X)
+                g.DrawLine(new Pen(Brushes.Black), x, 0, x, pictureItems.Height);
+            for (float y = 0; y < pictureItems.Height; y += paintPreviewSize.Y)
+                g.DrawLine(new Pen(Brushes.Black), 0, y, pictureItems.Width, y);
 
-            Bitmap thumb = new Bitmap(Size, Size, PixelFormat.Format24bppRgb);
+            //if (PaintTileSelected == true)
+                g.DrawRectangle(new Pen(Brushes.LightSeaGreen), SelectedTile);
 
-            Graphics g = Graphics.FromImage(thumb);
-            g.Clear(Color.White);
-            g.InterpolationMode = InterpolationMode.High;
-            g.DrawImage(Image, new Rectangle(X, Y, Width, Height), new Rectangle(0, 0, Image.Width, Image.Height), GraphicsUnit.Pixel);
+            g.Dispose();
+            pictureItems.Image = displayImage;
+        }
 
-            return thumb;
+        private void DetectPaintTileSelection()
+        {
+            int X = Math.Min(TempSelection.Location.X, TempSelection.Width);
+            int Y = Math.Min(TempSelection.Y, TempSelection.Height);
+            int W = Math.Max(TempSelection.Location.X, TempSelection.Width);
+            int H = Math.Max(TempSelection.Y, TempSelection.Height);
+
+
+            SelectedTile = new Rectangle(X, Y, W, H);
+            PaintTileSelected = true;
         }
         #endregion
 
 
-#region MapTools Actions
+        #region MapTools Actions
         private void ListViewMaps_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listViewMap.SelectedIndices.Count < 1) { MapIndex = -1; return; }
+            if (listViewMap.SelectedIndices.Count < 1)
+            {
+                MapIndex = -1;
+                Size Temp = new Size(1, 1);
+                ed.SetPictureBox(Temp, Temp);
+                return;
+            }
 
             MapIndex = listViewMap.SelectedIndices[0];
+            listViewLayers.Clear();
+            for (int i = 0; i < MapList[MapIndex].layers.Count; i++)
+                listViewLayers.Items.Add("Layer " + i);
+
+            paintPreviewSize = (Point)MapList[MapIndex].gridSize;
+            pictureItems.Size = new Size(MapList[MapIndex].gridSize.Width * 10, MapList[MapIndex].gridSize.Height * 6);
+            Draw();
+
+            ed.SetPictureBox(MapList[MapIndex].mapSize, MapList[MapIndex].gridSize);
             ed.Draw();
         }
 
-        private void ListViewItem_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListViewLayers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listViewItem.SelectedIndices.Count < 1) { ItemIndex = -1; return; }
+            if (listViewLayers.SelectedIndices.Count < 1)
+            {
+                LayerIndex = -1;
+                return;
+            }
 
-            ItemIndex = listViewItem.SelectedIndices[0];
-            ed.Draw();
+            LayerIndex = listViewLayers.SelectedIndices[0];
         }
+
 
         private void ListViewMaps_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
         {
             MapList[MapIndex].name = e.Label;
         }
 
-        private void ListViewItem_AfterLabelEdit(object sender, BetterListViewLabelEditEventArgs e)
-        {
-            Items[ItemIndex].name = e.Label;
-        }
 
         private void ListViewMaps_KeyDown(object sender, KeyEventArgs e)
         {
@@ -137,24 +181,29 @@ namespace MapEditorApp
                 ButtonDeleteMap_Click(sender, e);
         }
 
+
         private void ButtonNewMap_Click(object sender, EventArgs e)
         {
             if (setMap != null) { return; }
 
-            MapList.Add(new Map("Map " + (MapList.Count + 1)));
-            listViewMap.Items.Add("Map " + (MapList.Count));
-            listViewMap.Items[(MapList.Count - 1)].Selected = true;
+            MapList.Add(new Map("Map " + ++MapCount));
+            listViewMap.Items.Add("Map " + MapCount);
 
             setMap = new SetMap(this);
-            setMap.Show();
-            ed.Draw();
+            setMap.ShowDialog();
         }
+
+        private void ButtonAddLayer_Click(object sender, EventArgs e)
+        {
+            if (MapIndex == -1) { return; }
+
+            AddLayer(MapIndex);
+        }
+
 
         private void ButtonDeleteMap_Click(object sender, EventArgs e)
         {
             if (MapIndex == -1) { return; }
-
-            int Count = MapList.Count;
 
             string Name = MapList[MapIndex].name + "?";
             var confirmResult = MessageBox.Show(Parent, deleteText + Name, "Delete " + Name, MessageBoxButtons.YesNo);
@@ -163,39 +212,33 @@ namespace MapEditorApp
             {
                 MapList.RemoveAt(MapIndex);
                 listViewMap.Items.RemoveAt(MapIndex);
-                if (Count > 1)
-                    listViewMap.Items[Count - 1].Selected = true;
+                if (MapList.Count >= 1)
+                    listViewMap.Items[MapList.Count - 1].Selected = true;
                 else
                     MapIndex = -1;
+
+                listViewLayers.Clear();
                 ed.Draw();
             }
         }
 
-        private void ButtonDeleteItem_Click(object sender, EventArgs e)
+        private void ButtonDeleteLayer_Click(object sender, EventArgs e)
         {
-            if (ItemIndex == -1) { return; }
+            if (MapIndex == -1 || LayerIndex == -1 || MapList[MapIndex].layers.Count == 1) { return; }
 
-            int Count = Items.Count;
+            MapList[MapIndex].layers.RemoveAt(LayerIndex);
+            listViewLayers.Items.RemoveAt(LayerIndex);
+            listViewLayers.Items[MapList[MapIndex].layers.Count - 1].Selected = true;
 
-            string Name = Items[ItemIndex].name + "?";
-            var confirmResult = MessageBox.Show(Parent, deleteText + Name, "Delete " + Name, MessageBoxButtons.YesNo);
-
-            if (confirmResult == DialogResult.Yes)
-            {
-                Items.RemoveAt(ItemIndex);
-                listViewItem.Items.RemoveAt(ItemIndex);
-                if (Count > 1)
-                    listViewItem.Items[Count - 1].Selected = true;
-                else
-                    ItemIndex = -1;
-            }
+            ed.Draw();
         }
+
 
         private void ButtonFromFile_Click(object sender, EventArgs e)
         {
             if (uploadBox != null) { return; }
             uploadBox = new UploadBox() { Owner = this };
-            uploadBox.Show();
+            uploadBox.ShowDialog();
         }
 
         private void ButtonViewGrid_Click(object sender, EventArgs e)
@@ -210,6 +253,31 @@ namespace MapEditorApp
             ed.drawGrid = !ed.drawGrid;
             ed.Draw();
         }
-#endregion
+        #endregion
+
+        private void PictureItems_MouseDown(object sender, MouseEventArgs e)
+        {
+            TempSelection.Location = e.Location;
+            PaintIndex = 1;
+        }
+
+        private void PictureItems_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (PaintIndex == -1) { return; }
+
+            TempSelection.Size = (Size)e.Location;
+            DetectPaintTileSelection();
+            PaintIndex = -1;
+            Draw();
+        }
+
+        private void pictureItems_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (PaintIndex == -1) { return; }
+
+            TempSelection.Size = (Size)e.Location;
+            DetectPaintTileSelection();
+            Draw();
+        }
     }
 }

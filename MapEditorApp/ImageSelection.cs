@@ -10,7 +10,7 @@ namespace MapEditorApp
 
         #region Variables
         private MapTools t = null;
-        private Form u = null;
+        private UploadBox u = null;
 
         private bool usingGrid;
         private bool areaSelected;
@@ -47,7 +47,7 @@ namespace MapEditorApp
             mainBit = new Bitmap(image);
             previewBit = new Bitmap(pictureBoxPreview.Width, pictureBoxPreview.Height);
 
-            pictureBoxImage.SizeMode = PictureBoxSizeMode.AutoSize;
+            panel2.Size = mainBit.Size;
 
             SetUpDownBox(numericUpDown_Left, 0, image.Width -1, numericUpDown_Left.Value);
             SetUpDownBox(numericUpDown_Top, 0, image.Height -1, numericUpDown_Top.Value);
@@ -178,7 +178,7 @@ namespace MapEditorApp
                 ButtonGrid_Click(sender, e);
 
             u = new UploadBox { Owner = this };
-            u.Show();
+            u.ShowDialog();
         }
 
         //
@@ -270,6 +270,8 @@ namespace MapEditorApp
             RectangleF dest = new RectangleF(0, 0, selectedArea.Width, selectedArea.Height);
             Bitmap bitmap = new Bitmap((int)dest.Width, (int)dest.Height);
             Graphics g = Graphics.FromImage(bitmap);
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             g.DrawImage(image, dest, selectedArea, GraphicsUnit.Pixel);
             g.Dispose();
 

@@ -78,8 +78,8 @@
             this.panel1.Controls.Add(this.buttonCustom);
             this.panel1.Controls.Add(this.buttonGrid);
             this.panel1.Controls.Add(this.buttonNewImage);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(1167, 0);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(320, 774);
@@ -330,7 +330,7 @@
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel2.Controls.Add(this.pictureBoxImage);
-            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Location = new System.Drawing.Point(320, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1167, 774);
@@ -338,11 +338,11 @@
             // 
             // pictureBoxImage
             // 
-            this.pictureBoxImage.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.pictureBoxImage.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pictureBoxImage.Location = new System.Drawing.Point(4, 2);
             this.pictureBoxImage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxImage.Name = "pictureBoxImage";
-            this.pictureBoxImage.Size = new System.Drawing.Size(1159, 772);
+            this.pictureBoxImage.Size = new System.Drawing.Size(1030, 772);
             this.pictureBoxImage.TabIndex = 0;
             this.pictureBoxImage.TabStop = false;
             this.pictureBoxImage.Click += new System.EventHandler(this.PictureBoxImage_Click);

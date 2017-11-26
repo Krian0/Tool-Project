@@ -8,11 +8,22 @@ namespace MapEditorApp
     {
         private string path;
         private bool validData;
+        private const int CP_NOCLOSE_BUTTON = 0x200;
 
         public UploadBox()
         {
             InitializeComponent();
             validData = false;
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams myCp = base.CreateParams;
+                myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
+                return myCp;
+            }
         }
 
         //Sets pictureBoxPreview to show the selected file
@@ -62,7 +73,7 @@ namespace MapEditorApp
 
             if (Owner.GetType() == typeof(ImageSelection))
                 (Owner as ImageSelection).OnUploadBoxClose(Image.FromFile(path));
-            else
+            else if(Owner.GetType() == typeof(MapTools))
             {
                 (Owner as MapTools).AddItem(new Bitmap(Image.FromFile(path)));
                 (Owner as MapTools).uploadBox = null;

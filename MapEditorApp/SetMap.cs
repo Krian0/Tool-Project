@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MapEditorApp
@@ -16,8 +17,9 @@ namespace MapEditorApp
 
         private void ButtonConfirm_Click(object sender, EventArgs e)
         {
-
-            t.MapSetup((int)MWidth.Value * (int)GWidth.Value, (int)MHeight.Value * (int)GHeight.Value, (int)GWidth.Value, (int)GHeight.Value);
+            Size Map = new Size((int)MWidth.Value * (int)GWidth.Value, (int)MHeight.Value * (int)GHeight.Value);
+            Size Grid = new Size((int)GWidth.Value, (int)GHeight.Value);
+            t.MapSetup(Map, Grid, (int)MWidth.Value, (int)MHeight.Value);
             t.setMap = null;
             Close();
         }

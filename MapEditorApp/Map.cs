@@ -7,12 +7,14 @@ namespace MapEditorApp
 {
     public class Map
     {
-        //Remove use of itemlist in maptools, provide methods here!!!
-
         public string name;
         public bool saved;
         public Size mapSize;
         public Size gridSize;
+
+        public List<Bitmap> layers = new List<Bitmap>();
+        public Tile[,] tiles;
+        public int LayerCount = 0;
 
         public BetterListViewItem ListViewMap { get { return ListMap(new BetterListViewItem(name)); } }
 

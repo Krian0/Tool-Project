@@ -132,6 +132,37 @@ namespace MapEditorApp
                 childForm.Close();
         }
 
+        private void ToolErase_Click(object sender, EventArgs e)
+        {
+            (editor as MapEditor).eraseTiles = !(editor as MapEditor).eraseTiles;
+            (editor as MapEditor).copyTiles = false;
+            (editor as MapEditor).fillTiles = false;
+
+            toolCopy.Checked = false;
+            toolFill.Checked = false;
+        }
+
+        private void ToolCopy_Click(object sender, EventArgs e)
+        {
+            (editor as MapEditor).eraseTiles = false;
+            (editor as MapEditor).copyTiles = !(editor as MapEditor).copyTiles;
+            (editor as MapEditor).fillTiles = false;
+
+            toolErase.Checked = false;
+            toolFill.Checked = false;
+        }
+
+        private void ToolFill_Click(object sender, EventArgs e)
+        {
+            (editor as MapEditor).eraseTiles = false;
+            (editor as MapEditor).copyTiles = false;
+            (editor as MapEditor).fillTiles = !(editor as MapEditor).fillTiles;
+
+            toolErase.Checked = false;
+            toolCopy.Checked = false;
+        }
+
+
         private void MapEditorParent_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Maximized && editor != null)

@@ -33,25 +33,25 @@
             this.buttonDeleteMap = new System.Windows.Forms.Button();
             this.buttonNewMap = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.buttonDeleteItem = new System.Windows.Forms.Button();
+            this.buttonAddLayer = new System.Windows.Forms.Button();
+            this.buttonDeleteLayer = new System.Windows.Forms.Button();
             this.listViewMap = new ComponentOwl.BetterListView.BetterListView();
             this.betterListViewColumnHeader1 = new ComponentOwl.BetterListView.BetterListViewColumnHeader();
             this.betterListViewColumnHeader2 = new ComponentOwl.BetterListView.BetterListViewColumnHeader();
-            this.listViewItem = new ComponentOwl.BetterListView.BetterListView();
-            this.numericUpDownWidth = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownHeight = new System.Windows.Forms.NumericUpDown();
             this.buttonViewGrid = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.listViewLayers = new ComponentOwl.BetterListView.BetterListView();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.pictureItems = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.listViewMap)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.listViewItem)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listViewLayers)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureItems)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonFromFile
             // 
-            this.buttonFromFile.Location = new System.Drawing.Point(12, 563);
+            this.buttonFromFile.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonFromFile.Location = new System.Drawing.Point(12, 784);
             this.buttonFromFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonFromFile.Name = "buttonFromFile";
             this.buttonFromFile.Size = new System.Drawing.Size(111, 23);
@@ -63,10 +63,11 @@
             // 
             // buttonDeleteMap
             // 
-            this.buttonDeleteMap.Location = new System.Drawing.Point(195, 12);
+            this.buttonDeleteMap.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonDeleteMap.Location = new System.Drawing.Point(180, 12);
             this.buttonDeleteMap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonDeleteMap.Name = "buttonDeleteMap";
-            this.buttonDeleteMap.Size = new System.Drawing.Size(96, 25);
+            this.buttonDeleteMap.Size = new System.Drawing.Size(111, 25);
             this.buttonDeleteMap.TabIndex = 7;
             this.buttonDeleteMap.Text = "Delete Map";
             this.toolTip.SetToolTip(this.buttonDeleteMap, "Delete selected map");
@@ -75,26 +76,42 @@
             // 
             // buttonNewMap
             // 
+            this.buttonNewMap.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.buttonNewMap.Location = new System.Drawing.Point(12, 12);
             this.buttonNewMap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonNewMap.Name = "buttonNewMap";
-            this.buttonNewMap.Size = new System.Drawing.Size(96, 25);
+            this.buttonNewMap.Size = new System.Drawing.Size(111, 25);
             this.buttonNewMap.TabIndex = 8;
             this.buttonNewMap.Text = "New Map";
             this.toolTip.SetToolTip(this.buttonNewMap, "Add new map");
             this.buttonNewMap.UseVisualStyleBackColor = true;
             this.buttonNewMap.Click += new System.EventHandler(this.ButtonNewMap_Click);
             // 
-            // buttonDeleteItem
+            // buttonAddLayer
             // 
-            this.buttonDeleteItem.Location = new System.Drawing.Point(180, 563);
-            this.buttonDeleteItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.buttonDeleteItem.Name = "buttonDeleteItem";
-            this.buttonDeleteItem.Size = new System.Drawing.Size(111, 23);
-            this.buttonDeleteItem.TabIndex = 9;
-            this.buttonDeleteItem.Text = "Delete Item";
-            this.buttonDeleteItem.UseVisualStyleBackColor = true;
-            this.buttonDeleteItem.Click += new System.EventHandler(this.ButtonDeleteItem_Click);
+            this.buttonAddLayer.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonAddLayer.Location = new System.Drawing.Point(12, 227);
+            this.buttonAddLayer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonAddLayer.Name = "buttonAddLayer";
+            this.buttonAddLayer.Size = new System.Drawing.Size(111, 25);
+            this.buttonAddLayer.TabIndex = 19;
+            this.buttonAddLayer.Text = "Add Layer";
+            this.toolTip.SetToolTip(this.buttonAddLayer, "Add new map");
+            this.buttonAddLayer.UseVisualStyleBackColor = true;
+            this.buttonAddLayer.Click += new System.EventHandler(this.ButtonAddLayer_Click);
+            // 
+            // buttonDeleteLayer
+            // 
+            this.buttonDeleteLayer.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonDeleteLayer.Location = new System.Drawing.Point(180, 227);
+            this.buttonDeleteLayer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonDeleteLayer.Name = "buttonDeleteLayer";
+            this.buttonDeleteLayer.Size = new System.Drawing.Size(111, 25);
+            this.buttonDeleteLayer.TabIndex = 20;
+            this.buttonDeleteLayer.Text = "Delete Layer";
+            this.toolTip.SetToolTip(this.buttonDeleteLayer, "Delete selected map");
+            this.buttonDeleteLayer.UseVisualStyleBackColor = true;
+            this.buttonDeleteLayer.Click += new System.EventHandler(this.ButtonDeleteLayer_Click);
             // 
             // listViewMap
             // 
@@ -125,79 +142,62 @@
             this.betterListViewColumnHeader2.Text = "Saved";
             this.betterListViewColumnHeader2.Width = 65;
             // 
-            // listViewItem
-            // 
-            this.listViewItem.AutoSizeItemsInDetailsView = true;
-            this.listViewItem.HeaderStyle = ComponentOwl.BetterListView.BetterListViewHeaderStyle.Nonclickable;
-            this.listViewItem.HideSelectionMode = ComponentOwl.BetterListView.BetterListViewHideSelectionMode.KeepSelection;
-            this.listViewItem.LabelEditActivation = ComponentOwl.BetterListView.BetterListViewLabelEditActivation.Immediate;
-            this.listViewItem.LabelEditModeItems = ComponentOwl.BetterListView.BetterListViewLabelEditMode.Text;
-            this.listViewItem.Location = new System.Drawing.Point(12, 218);
-            this.listViewItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.listViewItem.MultiSelect = false;
-            this.listViewItem.Name = "listViewItem";
-            this.listViewItem.Size = new System.Drawing.Size(279, 341);
-            this.listViewItem.TabIndex = 11;
-            this.listViewItem.View = ComponentOwl.BetterListView.BetterListViewView.LargeIcon;
-            this.listViewItem.AfterLabelEdit += new ComponentOwl.BetterListView.BetterListViewLabelEditEventHandler(this.ListViewItem_AfterLabelEdit);
-            this.listViewItem.SelectedIndexChanged += new System.EventHandler(this.ListViewItem_SelectedIndexChanged);
-            // 
-            // numericUpDownWidth
-            // 
-            this.numericUpDownWidth.Location = new System.Drawing.Point(12, 607);
-            this.numericUpDownWidth.Name = "numericUpDownWidth";
-            this.numericUpDownWidth.Size = new System.Drawing.Size(96, 22);
-            this.numericUpDownWidth.TabIndex = 12;
-            // 
-            // numericUpDownHeight
-            // 
-            this.numericUpDownHeight.Location = new System.Drawing.Point(12, 635);
-            this.numericUpDownHeight.Name = "numericUpDownHeight";
-            this.numericUpDownHeight.Size = new System.Drawing.Size(96, 22);
-            this.numericUpDownHeight.TabIndex = 13;
-            // 
             // buttonViewGrid
             // 
-            this.buttonViewGrid.Location = new System.Drawing.Point(12, 663);
+            this.buttonViewGrid.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonViewGrid.Location = new System.Drawing.Point(198, 784);
             this.buttonViewGrid.Name = "buttonViewGrid";
-            this.buttonViewGrid.Size = new System.Drawing.Size(96, 27);
+            this.buttonViewGrid.Size = new System.Drawing.Size(93, 23);
             this.buttonViewGrid.TabIndex = 15;
             this.buttonViewGrid.Text = "Show Grid";
             this.buttonViewGrid.UseVisualStyleBackColor = true;
             this.buttonViewGrid.Click += new System.EventHandler(this.ButtonViewGrid_Click);
             // 
-            // label1
+            // listViewLayers
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(114, 612);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 17);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Grid Width";
+            this.listViewLayers.HideSelectionMode = ComponentOwl.BetterListView.BetterListViewHideSelectionMode.KeepSelection;
+            this.listViewLayers.LabelEditActivation = ComponentOwl.BetterListView.BetterListViewLabelEditActivation.Immediate;
+            this.listViewLayers.LabelEditModeItems = ComponentOwl.BetterListView.BetterListViewLabelEditMode.Text;
+            this.listViewLayers.Location = new System.Drawing.Point(12, 258);
+            this.listViewLayers.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.listViewLayers.MultiSelect = false;
+            this.listViewLayers.Name = "listViewLayers";
+            this.listViewLayers.Size = new System.Drawing.Size(279, 185);
+            this.listViewLayers.TabIndex = 21;
+            this.listViewLayers.SelectedIndexChanged += new System.EventHandler(this.ListViewLayers_SelectedIndexChanged);
             // 
-            // label2
+            // panel1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(114, 640);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 17);
-            this.label2.TabIndex = 17;
-            this.label2.Text = "Grid Height";
+            this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.pictureItems);
+            this.panel1.Location = new System.Drawing.Point(13, 449);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(278, 329);
+            this.panel1.TabIndex = 22;
+            // 
+            // pictureItems
+            // 
+            this.pictureItems.Location = new System.Drawing.Point(0, 0);
+            this.pictureItems.Name = "pictureItems";
+            this.pictureItems.Size = new System.Drawing.Size(278, 326);
+            this.pictureItems.TabIndex = 0;
+            this.pictureItems.TabStop = false;
+            this.pictureItems.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureItems_MouseDown);
+            this.pictureItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureItems_MouseMove);
+            this.pictureItems.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PictureItems_MouseUp);
             // 
             // MapTools
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(301, 816);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(301, 942);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.listViewLayers);
+            this.Controls.Add(this.buttonDeleteLayer);
+            this.Controls.Add(this.buttonAddLayer);
             this.Controls.Add(this.buttonViewGrid);
-            this.Controls.Add(this.numericUpDownHeight);
-            this.Controls.Add(this.numericUpDownWidth);
-            this.Controls.Add(this.listViewItem);
             this.Controls.Add(this.listViewMap);
-            this.Controls.Add(this.buttonDeleteItem);
             this.Controls.Add(this.buttonNewMap);
             this.Controls.Add(this.buttonDeleteMap);
             this.Controls.Add(this.buttonFromFile);
@@ -207,11 +207,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MapTools";
             ((System.ComponentModel.ISupportInitialize)(this.listViewMap)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.listViewItem)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listViewLayers)).EndInit();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureItems)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -220,15 +219,14 @@
         private System.Windows.Forms.Button buttonDeleteMap;
         private System.Windows.Forms.Button buttonNewMap;
         private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.Button buttonDeleteItem;
         private ComponentOwl.BetterListView.BetterListView listViewMap;
         private ComponentOwl.BetterListView.BetterListViewColumnHeader betterListViewColumnHeader1;
         private ComponentOwl.BetterListView.BetterListViewColumnHeader betterListViewColumnHeader2;
-        private ComponentOwl.BetterListView.BetterListView listViewItem;
-        private System.Windows.Forms.NumericUpDown numericUpDownWidth;
-        private System.Windows.Forms.NumericUpDown numericUpDownHeight;
         private System.Windows.Forms.Button buttonViewGrid;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button buttonAddLayer;
+        private System.Windows.Forms.Button buttonDeleteLayer;
+        private ComponentOwl.BetterListView.BetterListView listViewLayers;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.PictureBox pictureItems;
     }
 }

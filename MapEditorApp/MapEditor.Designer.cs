@@ -35,6 +35,7 @@
             // pictureBox
             // 
             this.pictureBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.pictureBox.BackgroundImage = global::WindowsFormsApp1.Properties.Resources.Background;
             this.pictureBox.Location = new System.Drawing.Point(2, 2);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(1170, 569);
@@ -42,7 +43,6 @@
             this.pictureBox.TabStop = false;
             this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseDown);
             this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseMove);
-            this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseUp);
             // 
             // MapEditor
             // 

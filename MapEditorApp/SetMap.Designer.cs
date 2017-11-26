@@ -175,18 +175,18 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(98, 57);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 17);
+            this.label6.Size = new System.Drawing.Size(80, 17);
             this.label6.TabIndex = 11;
-            this.label6.Text = "Width";
+            this.label6.Text = "Pixels Wide";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(98, 87);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(49, 17);
+            this.label7.Size = new System.Drawing.Size(77, 17);
             this.label7.TabIndex = 12;
-            this.label7.Text = "Height";
+            this.label7.Text = "Pixels High";
             // 
             // SetMap
             // 

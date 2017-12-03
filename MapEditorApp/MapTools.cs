@@ -15,35 +15,31 @@ namespace MapEditorApp
     {
         private MapEditor ed = null;
         public Form uploadBox = null;
-        public Form setMap = null;
 
         public List<Map> MapList { get; set; } = new List<Map>();
         public List<Tile> paintTiles = new List<Tile>();
+        public List<Tile> selectedPaintTiles = new List<Tile>();
 
         public int MapIndex { get; private set; } = -1;
         public int LayerIndex { get; private set; } = -1;
         public int PaintIndex { get; private set; } = -1;
 
-        public bool PaintTileSelected { get; private set; } = false;
-        public Rectangle SelectedTile { get; private set; } = new Rectangle(0, 0, 0, 0);
-        private Rectangle TempSelection = new Rectangle(0, 0, 0, 0);
-        private Point nextFreeTile = new Point(0, 0);
-        private Point paintPreviewSize = new Point(50, 50);
+        public Size paintPalletSize  = new Size(16, 16);
+        public int paintPalletMargin = 6;
 
         string deleteText = "Are you sure you want to delete ";
         private int MapCount = 0;
 
-        private Bitmap displayImage;
+        public Bitmap displayBase;
+        public Image displayImage;
 
         public MapTools(MapEditorParent ToolParent)
         {
             InitializeComponent();
 
             panel1.HorizontalScroll.Enabled = true;
-            pictureItems.Size = new Size(panel1.Size.Width + 20, panel1.Size.Height - 21);
-            panel1.Controls.Add(pictureItems);
-
-            displayImage = new Bitmap(paintPreviewSize.X * 10, paintPreviewSize.Y * 6);
+            picturePaintPallet.SizeMode = PictureBoxSizeMode.AutoSize;
+            panel1.Controls.Add(picturePaintPallet);
         }
 
 
@@ -87,48 +83,32 @@ namespace MapEditorApp
             listViewLayers.Items[MapList[Map_Index].layers.Count - 1].Selected = true;
         }
 
-        public void AddItem(Image ItemImage)
+        public void AddTile(Image TileImage, Point TileLocation)
         {
-            paintTiles.Add(new Tile(ItemImage, true, new Rectangle(nextFreeTile, ItemImage.Size)));
-            nextFreeTile.X = nextFreeTile.X + ItemImage.Size.Width;
-            Draw();
+            paintTiles.Add(new Tile(TileImage, true, false, new Rectangle(TileLocation, TileImage.Size)));
             ed.Draw();
         }
 
         public void Draw()
         {
-            Graphics g = Graphics.FromImage(displayImage);
+            if (displayImage == null) { return; }
+
+            Graphics g = Graphics.FromImage(displayBase);
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             g.Clear(Color.Transparent);
-
-            //Draw paintable tiles
-            for (int i = 0; i < paintTiles.Count; i++)
-                g.DrawImage(paintTiles[i].image, paintTiles[i].tileRect.Location);
+            g.DrawImage(displayImage, 0, 0);
 
             //Draw grid
-            for (float x = 0; x < pictureItems.Width; x += paintPreviewSize.X)
-                g.DrawLine(new Pen(Brushes.Black), x, 0, x, pictureItems.Height);
-            for (float y = 0; y < pictureItems.Height; y += paintPreviewSize.Y)
-                g.DrawLine(new Pen(Brushes.Black), 0, y, pictureItems.Width, y);
+            for (int x = 0; x < displayImage.Width; x += (paintPalletSize.Width + paintPalletMargin))
+                for (int y = 0; y < displayImage.Height; y += (paintPalletSize.Height + paintPalletMargin))
+                    g.DrawRectangle(new Pen(Brushes.Black), new Rectangle(x, y, paintPalletSize.Width, paintPalletSize.Height));
 
-            //if (PaintTileSelected == true)
-                g.DrawRectangle(new Pen(Brushes.LightSeaGreen), SelectedTile);
+            for (int i = 0; i < selectedPaintTiles.Count; i++)
+                g.DrawRectangle(new Pen(Brushes.LightSeaGreen, 2), selectedPaintTiles[i].tileRect);
 
             g.Dispose();
-            pictureItems.Image = displayImage;
-        }
-
-        private void DetectPaintTileSelection()
-        {
-            int X = Math.Min(TempSelection.Location.X, TempSelection.Width);
-            int Y = Math.Min(TempSelection.Y, TempSelection.Height);
-            int W = Math.Max(TempSelection.Location.X, TempSelection.Width);
-            int H = Math.Max(TempSelection.Y, TempSelection.Height);
-
-
-            SelectedTile = new Rectangle(X, Y, W, H);
-            PaintTileSelected = true;
+            picturePaintPallet.Image = displayBase;
         }
         #endregion
 
@@ -148,10 +128,6 @@ namespace MapEditorApp
             listViewLayers.Clear();
             for (int i = 0; i < MapList[MapIndex].layers.Count; i++)
                 listViewLayers.Items.Add("Layer " + i);
-
-            paintPreviewSize = (Point)MapList[MapIndex].gridSize;
-            pictureItems.Size = new Size(MapList[MapIndex].gridSize.Width * 10, MapList[MapIndex].gridSize.Height * 6);
-            Draw();
 
             ed.SetPictureBox(MapList[MapIndex].mapSize, MapList[MapIndex].gridSize);
             ed.Draw();
@@ -184,12 +160,10 @@ namespace MapEditorApp
 
         private void ButtonNewMap_Click(object sender, EventArgs e)
         {
-            if (setMap != null) { return; }
-
             MapList.Add(new Map("Map " + ++MapCount));
             listViewMap.Items.Add("Map " + MapCount);
 
-            setMap = new SetMap(this);
+            SetMap setMap = new SetMap(this);
             setMap.ShowDialog();
         }
 
@@ -237,8 +211,11 @@ namespace MapEditorApp
         private void ButtonFromFile_Click(object sender, EventArgs e)
         {
             if (uploadBox != null) { return; }
-            uploadBox = new UploadBox() { Owner = this };
+            uploadBox = new UploadBox(this);
             uploadBox.ShowDialog();
+
+            SetPaintPallet setPallet = new SetPaintPallet(this);
+            setPallet.ShowDialog();
         }
 
         private void ButtonViewGrid_Click(object sender, EventArgs e)
@@ -255,28 +232,27 @@ namespace MapEditorApp
         }
         #endregion
 
-        private void PictureItems_MouseDown(object sender, MouseEventArgs e)
+        private void PicturePaintPallet_MouseClick(object sender, MouseEventArgs e)
         {
-            TempSelection.Location = e.Location;
-            PaintIndex = 1;
-        }
+            for (int i = 0; i < paintTiles.Count; i++)
+            {
+                if (paintTiles[i].tileRect.Contains(e.Location))
+                {
+                    PaintIndex = 1;
 
-        private void PictureItems_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (PaintIndex == -1) { return; }
+                    if (!paintTiles[i].isSelected)
+                    {
+                        paintTiles[i].isSelected = true;
+                        selectedPaintTiles.Add(paintTiles[i]);
+                    }
+                    else
+                    {
+                        selectedPaintTiles.Remove(paintTiles[i]);
+                        paintTiles[i].isSelected = false;
+                    }
+                }
+            }
 
-            TempSelection.Size = (Size)e.Location;
-            DetectPaintTileSelection();
-            PaintIndex = -1;
-            Draw();
-        }
-
-        private void pictureItems_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (PaintIndex == -1) { return; }
-
-            TempSelection.Size = (Size)e.Location;
-            DetectPaintTileSelection();
             Draw();
         }
     }

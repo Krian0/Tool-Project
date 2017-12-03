@@ -6,14 +6,18 @@ namespace MapEditorApp
 {
     public partial class UploadBox : Form
     {
+        private MapTools t;
+
         private string path;
-        private bool validData;
+        private bool validData = false;
+        private bool validExtension = false;
         private const int CP_NOCLOSE_BUTTON = 0x200;
 
-        public UploadBox()
+        public UploadBox(MapTools Tools)
         {
             InitializeComponent();
-            validData = false;
+            t = Tools;
+            pictureBoxPreview.SizeMode = PictureBoxSizeMode.AutoSize;
         }
 
         protected override CreateParams CreateParams
@@ -30,11 +34,10 @@ namespace MapEditorApp
         private void ShowImage()
         {
             pictureBoxPreview.BackgroundImage = null;
-            pictureBoxPreview.SizeMode = PictureBoxSizeMode.AutoSize;
             pictureBoxPreview.Image = Image.FromFile(path);
         }
 
-        //Return the folder containing example images, else
+        //Return the folder containing example images if it exists where it is supposed to be, else return current directory
         private string GetImageDirectory()
         {
             string Dir = System.IO.Directory.GetCurrentDirectory();
@@ -58,7 +61,11 @@ namespace MapEditorApp
 
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                if (dlg.CheckFileExists == false) { return; }
+                if (dlg.CheckFileExists == false)
+                {
+                    validData = false;
+                    return;
+                }
 
                 path = dlg.FileName;
                 validData = true;
@@ -71,13 +78,9 @@ namespace MapEditorApp
         {
             if (validData == false) { return; }
 
-            if (Owner.GetType() == typeof(ImageSelection))
-                (Owner as ImageSelection).OnUploadBoxClose(Image.FromFile(path));
-            else if(Owner.GetType() == typeof(MapTools))
-            {
-                (Owner as MapTools).AddItem(new Bitmap(Image.FromFile(path)));
-                (Owner as MapTools).uploadBox = null;
-            }
+            t.displayImage = new Bitmap(Image.FromFile(path));
+            t.displayBase = new Bitmap(t.displayImage.Width, t.displayImage.Height);
+            t.uploadBox = null;
 
             Close();
         }
@@ -94,24 +97,25 @@ namespace MapEditorApp
 
                     if (type == ".jpg" || type == ".png" || type == ".bmp")
                     {
-                        validData = true;
+                        validExtension = true;
                         e.Effect = DragDropEffects.Copy;
                     }
                 }
             }
             else
             {
-                validData = false;
+                validExtension = false;
                 e.Effect = DragDropEffects.None;
             }
         }
 
         private void UploadBox_DragDrop(object sender, DragEventArgs e)
         {
-            if (validData == false) { return; }
+            if (validExtension == false) { return; }
 
             path = ((string[])((e.Data).GetData("FileName") as Array))[0];
             ShowImage();
+            validData = true;
         }
     }
 }

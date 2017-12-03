@@ -87,6 +87,12 @@
     <Compile Include="SetMap.Designer.cs">
       <DependentUpon>SetMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="SetPaintPallet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetPaintPallet.Designer.cs">
+      <DependentUpon>SetPaintPallet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tile.cs" />
     <Compile Include="UploadBox.cs">
       <SubType>Form</SubType>
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SetMap.resx">
       <DependentUpon>SetMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetPaintPallet.resx">
+      <DependentUpon>SetPaintPallet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UploadBox.resx">
       <DependentUpon>UploadBox.cs</DependentUpon>

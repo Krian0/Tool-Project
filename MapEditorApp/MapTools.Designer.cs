@@ -41,17 +41,19 @@
             this.buttonViewGrid = new System.Windows.Forms.Button();
             this.listViewLayers = new ComponentOwl.BetterListView.BetterListView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureItems = new System.Windows.Forms.PictureBox();
+            this.picturePaintPallet = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.listViewMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.listViewLayers)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureItems)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picturePaintPallet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonFromFile
             // 
             this.buttonFromFile.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonFromFile.Location = new System.Drawing.Point(12, 784);
+            this.buttonFromFile.Location = new System.Drawing.Point(12, 461);
             this.buttonFromFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonFromFile.Name = "buttonFromFile";
             this.buttonFromFile.Size = new System.Drawing.Size(111, 23);
@@ -145,9 +147,9 @@
             // buttonViewGrid
             // 
             this.buttonViewGrid.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonViewGrid.Location = new System.Drawing.Point(198, 784);
+            this.buttonViewGrid.Location = new System.Drawing.Point(180, 461);
             this.buttonViewGrid.Name = "buttonViewGrid";
-            this.buttonViewGrid.Size = new System.Drawing.Size(93, 23);
+            this.buttonViewGrid.Size = new System.Drawing.Size(111, 23);
             this.buttonViewGrid.TabIndex = 15;
             this.buttonViewGrid.Text = "Show Grid";
             this.buttonViewGrid.UseVisualStyleBackColor = true;
@@ -169,29 +171,36 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.pictureItems);
-            this.panel1.Location = new System.Drawing.Point(13, 449);
+            this.panel1.Controls.Add(this.picturePaintPallet);
+            this.panel1.Location = new System.Drawing.Point(12, 490);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(278, 329);
+            this.panel1.Size = new System.Drawing.Size(279, 329);
             this.panel1.TabIndex = 22;
             // 
-            // pictureItems
+            // picturePaintPallet
             // 
-            this.pictureItems.Location = new System.Drawing.Point(0, 0);
-            this.pictureItems.Name = "pictureItems";
-            this.pictureItems.Size = new System.Drawing.Size(278, 326);
-            this.pictureItems.TabIndex = 0;
-            this.pictureItems.TabStop = false;
-            this.pictureItems.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureItems_MouseDown);
-            this.pictureItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureItems_MouseMove);
-            this.pictureItems.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PictureItems_MouseUp);
+            this.picturePaintPallet.Location = new System.Drawing.Point(0, 0);
+            this.picturePaintPallet.Name = "picturePaintPallet";
+            this.picturePaintPallet.Size = new System.Drawing.Size(278, 326);
+            this.picturePaintPallet.TabIndex = 0;
+            this.picturePaintPallet.TabStop = false;
+            this.picturePaintPallet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PicturePaintPallet_MouseClick);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(12, 825);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(277, 227);
+            this.pictureBox1.TabIndex = 23;
+            this.pictureBox1.TabStop = false;
             // 
             // MapTools
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(301, 942);
+            this.ClientSize = new System.Drawing.Size(301, 1102);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.listViewLayers);
             this.Controls.Add(this.buttonDeleteLayer);
@@ -209,7 +218,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.listViewMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.listViewLayers)).EndInit();
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureItems)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picturePaintPallet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -227,6 +237,7 @@
         private System.Windows.Forms.Button buttonDeleteLayer;
         private ComponentOwl.BetterListView.BetterListView listViewLayers;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox pictureItems;
+        private System.Windows.Forms.PictureBox picturePaintPallet;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

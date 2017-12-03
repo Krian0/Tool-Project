@@ -177,8 +177,8 @@ namespace MapEditorApp
             if (usingGrid == false)
                 ButtonGrid_Click(sender, e);
 
-            u = new UploadBox { Owner = this };
-            u.ShowDialog();
+            //u = new UploadBox(this);
+            //u.ShowDialog();
         }
 
         //
@@ -275,7 +275,7 @@ namespace MapEditorApp
             g.DrawImage(image, dest, selectedArea, GraphicsUnit.Pixel);
             g.Dispose();
 
-            t.AddItem(bitmap);
+            //t.AddItem(bitmap);
         }
 
         private void NumericUpDown_Left_ValueChanged(object sender, EventArgs e)

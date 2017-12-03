@@ -126,7 +126,7 @@ namespace MapEditorApp
         #region MapEditor Actions
         private void PictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (t.MapIndex == -1 || t.LayerIndex == -1 || t.PaintTileSelected == false || e.Button != MouseButtons.Left) { return; }
+            if (t.MapIndex == -1 || t.LayerIndex == -1 || t.PaintIndex == -1 || e.Button != MouseButtons.Left) { return; }
 
             PaintTile((e as MouseEventArgs).Location);
             Draw();
@@ -134,7 +134,7 @@ namespace MapEditorApp
 
         private void PictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (t.MapIndex == -1 || t.LayerIndex == -1 || t.PaintTileSelected == false || e.Button != MouseButtons.Left) { return; }
+            if (t.MapIndex == -1 || t.LayerIndex == -1 || t.PaintIndex == -1 || e.Button != MouseButtons.Left) { return; }
 
             PaintTile((e as MouseEventArgs).Location);
             Draw();

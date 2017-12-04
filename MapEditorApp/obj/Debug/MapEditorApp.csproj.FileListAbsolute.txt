@@ -29,3 +29,6 @@ C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEd
 C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.SetMap.resources
 C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\bin\Debug\betterlistviewexpress.dll
 C:\Users\kadie\OneDrive\Documents\Visual Studio 2017\Projects\Tool Project\MapEditorApp\obj\Debug\MapEditorApp.SetPaintPallet.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\bin\Debug\betterlistviewexpress.dll
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.SetMap.resources
+C:\Users\s170958\Documents\Tool-Project\MapEditorApp\obj\Debug\MapEditorApp.SetPaintPallet.resources

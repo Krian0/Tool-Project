@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ComponentOwl.BetterListView;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Linq;
 
 //NOTE:
 //If BetterListView is not working, it can be downloaded at https://visualstudiogallery.msdn.microsoft.com/f46bc2cb-9ba3-4ad6-91fd-55f0eadba6ea/view/Reviews
@@ -18,20 +19,23 @@ namespace MapEditorApp
 
         public List<Map> MapList { get; set; } = new List<Map>();
         public List<Tile> paintTiles = new List<Tile>();
-        public List<Tile> selectedPaintTiles = new List<Tile>();
+        private Rectangle paintSelection;
+        private bool isSelecting = false;
 
         public int MapIndex { get; private set; } = -1;
         public int LayerIndex { get; private set; } = -1;
         public int PaintIndex { get; private set; } = -1;
 
-        public Size paintPalletSize  = new Size(16, 16);
+        public Size paintPalletGrid  = new Size(16, 16);
         public int paintPalletMargin = 6;
+        public int selectionColour = 1;
 
         string deleteText = "Are you sure you want to delete ";
         private int MapCount = 0;
 
-        public Bitmap displayBase;
+        public Bitmap displayBase = new Bitmap(50, 50);
         public Image displayImage;
+        public Image paintImage;
 
         public MapTools(MapEditorParent ToolParent)
         {
@@ -100,16 +104,48 @@ namespace MapEditorApp
             g.DrawImage(displayImage, 0, 0);
 
             //Draw grid
-            for (int x = 0; x < displayImage.Width; x += (paintPalletSize.Width + paintPalletMargin))
-                for (int y = 0; y < displayImage.Height; y += (paintPalletSize.Height + paintPalletMargin))
-                    g.DrawRectangle(new Pen(Brushes.Black), new Rectangle(x, y, paintPalletSize.Width, paintPalletSize.Height));
+            for (int x = 0; x < displayImage.Width; x += (paintPalletGrid.Width + paintPalletMargin))
+                for (int y = 0; y < displayImage.Height; y += (paintPalletGrid.Height + paintPalletMargin))
+                    g.DrawRectangle(new Pen(Brushes.Black), new Rectangle(x, y, paintPalletGrid.Width, paintPalletGrid.Height));
 
-            for (int i = 0; i < selectedPaintTiles.Count; i++)
-                g.DrawRectangle(new Pen(Brushes.LightSeaGreen, 2), selectedPaintTiles[i].tileRect);
+            if (paintSelection != null)
+            {
+                if (selectionColour == 1)
+                    g.DrawRectangle(new Pen(Brushes.Tomato, 2), paintSelection);
+
+                if (selectionColour == 2)
+                    g.DrawRectangle(new Pen(Brushes.Orange, 2), paintSelection);
+
+                if (selectionColour == 3)
+                    g.DrawRectangle(new Pen(Brushes.Yellow, 2), paintSelection);
+
+                if (selectionColour == 4)
+                    g.DrawRectangle(new Pen(Brushes.SpringGreen, 2), paintSelection);
+
+                if (selectionColour == 5)
+                    g.DrawRectangle(new Pen(Brushes.Cyan, 2), paintSelection);
+
+                if (selectionColour == 6)
+                    g.DrawRectangle(new Pen(Brushes.Fuchsia, 2), paintSelection);
+            }
 
             g.Dispose();
             picturePaintPallet.Image = displayBase;
         }
+
+        public void SetSelectedImage(Image DestImage, Image SourceImage, int xPoint, int yPoint, Rectangle PaintFromRect)
+        {
+            using (Graphics g = Graphics.FromImage(DestImage))
+            {
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                g.DrawImage(SourceImage, xPoint, yPoint, PaintFromRect, GraphicsUnit.Pixel);
+                g.Dispose();
+            }
+        }
+
+
         #endregion
 
 
@@ -232,24 +268,76 @@ namespace MapEditorApp
         }
         #endregion
 
-        private void PicturePaintPallet_MouseClick(object sender, MouseEventArgs e)
+        private void ButtonColourCycle_Click(object sender, EventArgs e)
         {
+            if (selectionColour < 6)
+                selectionColour++;
+            else
+                selectionColour = 1;
+
+            Draw();
+        }
+
+        private void PicturePaintPallet_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!isSelecting || displayImage == null) { return; }
+
             for (int i = 0; i < paintTiles.Count; i++)
             {
                 if (paintTiles[i].tileRect.Contains(e.Location))
                 {
-                    PaintIndex = 1;
+                    Point Location = new Point(Math.Min(paintSelection.Location.X, paintTiles[i].tileRect.X), Math.Min(paintSelection.Location.Y, paintTiles[i].tileRect.Y));
+                    Point Extents = new Point(Math.Max(paintSelection.Location.X, paintTiles[i].tileRect.X), Math.Max(paintSelection.Location.Y, paintTiles[i].tileRect.Y));
 
-                    if (!paintTiles[i].isSelected)
-                    {
-                        paintTiles[i].isSelected = true;
-                        selectedPaintTiles.Add(paintTiles[i]);
-                    }
-                    else
-                    {
-                        selectedPaintTiles.Remove(paintTiles[i]);
-                        paintTiles[i].isSelected = false;
-                    }
+                    paintSelection.Location = Location;
+                    paintSelection.Size = new Size(paintPalletGrid.Width + (Extents.X - Location.X), paintPalletGrid.Height + (Extents.Y - Location.Y));
+                }
+            }
+
+            Draw();
+        }
+
+        private void PicturePaintPallet_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (displayImage == null) { return; }
+
+            isSelecting = true;
+            PaintIndex = 1;
+
+            for (int i = 0; i < paintTiles.Count; i++)
+            {
+                if (paintTiles[i].tileRect.Contains(e.Location))
+                {
+                    paintSelection.Location = paintTiles[i].tileRect.Location;
+                    paintSelection.Size = paintTiles[i].tileRect.Size;
+                }
+            }
+        }
+
+        private void PicturePaintPallet_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (displayImage == null) { return; }
+
+            isSelecting = false;
+
+            Size size = new Size(paintSelection.Width / (paintPalletGrid.Width + paintPalletMargin) + 1, 
+                                 paintSelection.Height / (paintPalletGrid.Height + paintPalletMargin) + 1);
+
+            paintImage = new Bitmap(size.Width * paintPalletGrid.Width, size.Height * paintPalletGrid.Height);
+            //SetSelectedImage(paintImage, displayImage, 0, 0, paintSelection);
+
+            for (int x = 0; x < size.Width; x++)
+            {
+                for (int y = 0; y < size.Height; y++)
+                {
+                    SetSelectedImage(paintImage,
+                        displayImage,
+                        x * paintPalletGrid.Width,
+                        y * paintPalletGrid.Height,
+                        new Rectangle(paintSelection.X + x * (paintPalletGrid.Width + paintPalletMargin),
+                                      paintSelection.Y + y * (paintPalletGrid.Height + paintPalletMargin),
+                                      paintPalletGrid.Width,
+                                      paintPalletGrid.Height));
                 }
             }
 

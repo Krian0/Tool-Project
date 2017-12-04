@@ -11,7 +11,6 @@ namespace MapEditorApp
         private MapTools t;
         private Bitmap display;
         private Bitmap gridDisplay;
-        private Image currentTileImage;
         private Rectangle position;
 
         public bool drawGrid = false;
@@ -89,37 +88,37 @@ namespace MapEditorApp
             else if (position.Bottom > pictureBox.Height) position.Y = pictureBox.Height - position.Height;
 
             Graphics g = Graphics.FromImage(t.MapList[t.MapIndex].layers[t.LayerIndex]);
-            g.SetClip(position);
-            g.Clear(Color.Transparent);
-            g.ResetClip();
+            //g.SetClip(position);
+            //g.Clear(Color.Transparent);
+            //g.ResetClip();
 
             if (eraseTiles == false)
-                g.DrawImage(currentTileImage, position.Location);
+                g.DrawImage(t.paintImage, position.Location);
 
             g.Dispose();
         }
 
-        public void ResizeAndSetImage(Image TileImage, Size MapSize)
-        {
-            var destRect = new Rectangle(0, 0, MapSize.Width, MapSize.Height);
-            var destImage = new Bitmap(MapSize.Width, MapSize.Height);
+        //public void ResizeAndSetImage(Image TileImage, Size MapSize)
+        //{
+        //    var destRect = new Rectangle(0, 0, MapSize.Width, MapSize.Height);
+        //    var destImage = new Bitmap(MapSize.Width, MapSize.Height);
 
-            destImage.SetResolution(TileImage.HorizontalResolution, TileImage.VerticalResolution);
+        //    destImage.SetResolution(TileImage.HorizontalResolution, TileImage.VerticalResolution);
 
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        //    using (var graphics = Graphics.FromImage(destImage))
+        //    {
+        //        graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+        //        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(TileImage, destRect, 0, 0, TileImage.Width, TileImage.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
+        //        using (var wrapMode = new ImageAttributes())
+        //        {
+        //            wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+        //            graphics.DrawImage(TileImage, destRect, 0, 0, TileImage.Width, TileImage.Height, GraphicsUnit.Pixel, wrapMode);
+        //        }
+        //    }
 
-            currentTileImage = destImage;
-        }
+        //    currentTileImage = destImage;
+        //}
 #endregion
 
 

@@ -6,14 +6,12 @@ namespace MapEditorApp
     {
         public Image image = null;
         public bool isFilled = false;
-        public bool isSelected = false;
         public Rectangle tileRect;
 
         public Tile(Image TileImage, bool IsTileFilled, bool IsTileSelected, Rectangle TileBounds)
         {
             image = TileImage;
             isFilled = IsTileFilled;
-            isSelected = IsTileSelected;
             tileRect = TileBounds;
         }
     }

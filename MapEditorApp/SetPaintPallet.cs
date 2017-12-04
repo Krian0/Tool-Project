@@ -21,7 +21,7 @@ namespace MapEditorApp
             int Height = (int)numericHeight.Value;
             int Margin = (int)numericMargin.Value;
 
-            t.paintPalletSize = new Size(Width, Height);
+            t.paintPalletGrid = new Size(Width, Height);
             t.paintPalletMargin = Margin;
 
             Bitmap TileImage = new Bitmap(Width, Height);
@@ -39,6 +39,7 @@ namespace MapEditorApp
                 }
             }
 
+            g.Dispose();
             t.Draw();
             Close();
         }

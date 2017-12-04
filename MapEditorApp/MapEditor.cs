@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -78,24 +79,35 @@ namespace MapEditorApp
 
         private void PaintTile(Point MousePos)
         {
-            int x = MousePos.X / position.Size.Width;
-            int y = MousePos.Y / position.Size.Height;
-            position.Location = new Point(x * position.Size.Width, y * position.Size.Height);
+            if (t.selectedTiles.Count == 0 || t.PaintIndex == -1) { return; }
 
-            if (position.X < 0) position.X = 0;
-            else if (position.Right > pictureBox.Width) position.X = pictureBox.Width - position.Width;
-            if (position.Y < 0) position.Y = 0;
-            else if (position.Bottom > pictureBox.Height) position.Y = pictureBox.Height - position.Height;
+            //int x = MousePos.X / position.Size.Width;
+            //int y = MousePos.Y / position.Size.Height;
+            //position.Location = new Point(x * position.Size.Width, y * position.Size.Height);
 
-            Graphics g = Graphics.FromImage(t.MapList[t.MapIndex].layers[t.LayerIndex]);
+            //if (position.X < 0) position.X = 0;
+            //else if (position.Right > pictureBox.Width) position.X = pictureBox.Width - position.Width;
+            //if (position.Y < 0) position.Y = 0;
+            //else if (position.Bottom > pictureBox.Height) position.Y = pictureBox.Height - position.Height;
+
+            //Graphics g = Graphics.FromImage(t.MapList[t.MapIndex].layers[t.LayerIndex]);
             //g.SetClip(position);
             //g.Clear(Color.Transparent);
             //g.ResetClip();
 
-            if (eraseTiles == false)
-                g.DrawImage(t.paintImage, position.Location);
+            for ()
 
-            g.Dispose();
+            if (eraseTiles == false)
+            {
+                for (int row = 0; row < t.selectedGrid.X; row++)
+                    for (int col = 0; col < t.selectedGrid.Y; col++)
+                        ;
+
+
+                //g.DrawImage(t.paintImage, position.Location);
+            }
+
+            //g.Dispose();
         }
 
         //public void ResizeAndSetImage(Image TileImage, Size MapSize)

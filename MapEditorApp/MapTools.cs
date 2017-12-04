@@ -30,6 +30,9 @@ namespace MapEditorApp
         public int paintPalletMargin = 6;
         public int selectionColour = 1;
 
+        public List<Tile> selectedTiles = new List<Tile>();
+        public Point selectedGrid = new Point(0, 0);
+
         string deleteText = "Are you sure you want to delete ";
         private int MapCount = 0;
 
@@ -144,8 +147,6 @@ namespace MapEditorApp
                 g.Dispose();
             }
         }
-
-
         #endregion
 
 
@@ -320,25 +321,51 @@ namespace MapEditorApp
 
             isSelecting = false;
 
-            Size size = new Size(paintSelection.Width / (paintPalletGrid.Width + paintPalletMargin) + 1, 
-                                 paintSelection.Height / (paintPalletGrid.Height + paintPalletMargin) + 1);
+            //Size size = new Size(paintSelection.Width / (paintPalletGrid.Width + paintPalletMargin) + 1, 
+            //                     paintSelection.Height / (paintPalletGrid.Height + paintPalletMargin) + 1);
 
-            paintImage = new Bitmap(size.Width * paintPalletGrid.Width, size.Height * paintPalletGrid.Height);
-            //SetSelectedImage(paintImage, displayImage, 0, 0, paintSelection);
+            //paintImage = new Bitmap(size.Width * paintPalletGrid.Width, size.Height * paintPalletGrid.Height);
+            ////SetSelectedImage(paintImage, displayImage, 0, 0, paintSelection);
 
-            for (int x = 0; x < size.Width; x++)
+            //for (int x = 0; x < size.Width; x++)
+            //{
+            //    for (int y = 0; y < size.Height; y++)
+            //    {
+            //        SetSelectedImage(paintImage,
+            //            displayImage,
+            //            x * paintPalletGrid.Width,
+            //            y * paintPalletGrid.Height,
+            //            new Rectangle(paintSelection.X + x * (paintPalletGrid.Width + paintPalletMargin),
+            //                          paintSelection.Y + y * (paintPalletGrid.Height + paintPalletMargin),
+            //                          paintPalletGrid.Width,
+            //                          paintPalletGrid.Height));
+            //    }
+            //}
+
+
+            for (int i = 0; i < paintTiles.Count; i++)
             {
-                for (int y = 0; y < size.Height; y++)
-                {
-                    SetSelectedImage(paintImage,
-                        displayImage,
-                        x * paintPalletGrid.Width,
-                        y * paintPalletGrid.Height,
-                        new Rectangle(paintSelection.X + x * (paintPalletGrid.Width + paintPalletMargin),
-                                      paintSelection.Y + y * (paintPalletGrid.Height + paintPalletMargin),
-                                      paintPalletGrid.Width,
-                                      paintPalletGrid.Height));
-                }
+                if (paintSelection.Contains(new Point(paintTiles[i].tileRect.X + 2, paintTiles[i].tileRect.Y + 2)))
+                    selectedTiles.Add(paintTiles[i]);
+            }
+
+            int row = 1, col = 1;
+
+            List<int> R = new List<int>();
+            List<int> C = new List<int>();
+
+            R.Add(selectedTiles[0].tileRect.X);
+            C.Add(selectedTiles[0].tileRect.Y);
+
+            for (int i = 1; i < selectedTiles.Count; i++)
+            {
+                if (!R.Contains(selectedTiles[i].tileRect.X))
+                    row++;
+                if (!C.Contains(selectedTiles[i].tileRect.Y))
+                    col++;
+
+                R.Add(selectedTiles[i].tileRect.X);
+                C.Add(selectedTiles[i].tileRect.Y);
             }
 
             Draw();

@@ -55,6 +55,8 @@
     <Compile Include="ImageSelection.Designer.cs">
       <DependentUpon>ImageSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Layer.cs" />
+    <Compile Include="list.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapEditor.cs">
       <SubType>Form</SubType>

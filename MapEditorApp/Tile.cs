@@ -8,7 +8,7 @@ namespace MapEditorApp
         public bool isFilled = false;
         public Rectangle tileRect;
 
-        public Tile(Image TileImage, bool IsTileFilled, bool IsTileSelected, Rectangle TileBounds)
+        public Tile(Image TileImage, bool IsTileFilled, Rectangle TileBounds)
         {
             image = TileImage;
             isFilled = IsTileFilled;

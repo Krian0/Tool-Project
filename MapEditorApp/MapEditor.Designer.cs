@@ -37,8 +37,9 @@
             this.pictureBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.pictureBox.BackgroundImage = global::WindowsFormsApp1.Properties.Resources.Background;
             this.pictureBox.Location = new System.Drawing.Point(2, 2);
+            this.pictureBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(1170, 569);
+            this.pictureBox.Size = new System.Drawing.Size(878, 462);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseDown);
@@ -46,13 +47,14 @@
             // 
             // MapEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.ClientSize = new System.Drawing.Size(1174, 573);
+            this.ClientSize = new System.Drawing.Size(880, 466);
             this.Controls.Add(this.pictureBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MapEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MapEditor";

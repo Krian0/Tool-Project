@@ -14,10 +14,15 @@ namespace MapEditorApp
         private Bitmap gridDisplay;
         private Rectangle position;
 
+        private int invalidatedTileIndex;
+
         public bool drawGrid = false;
         public bool eraseTiles = false;
         public bool copyTiles = false;
         public bool fillTiles = false;
+        public bool redrawAllTiles = false;
+
+        Tile copiedTile = null;
 
         public MapEditor(MapTools Tools)
         {
@@ -32,13 +37,39 @@ namespace MapEditorApp
             if (t.MapIndex == -1) { pictureBox.Image = null; return; }
 
             Graphics g = SetGraphics(display);
-            g.Clear(Color.Transparent);
 
-            for (int i = 0; i < t.MapList[t.MapIndex].layers.Count; i++)
-                g.DrawImage(t.MapList[t.MapIndex].layers[i], 0, 0);
+            if (fillTiles || redrawAllTiles)
+                g.Clear(Color.Transparent);
+
+            if (t.LayerIndex != -1)
+            {
+                if (!fillTiles && t.MapList[t.MapIndex].layers[t.LayerIndex].tiles.Count > invalidatedTileIndex)
+                {
+                    GraphicsPath path = new GraphicsPath();
+                    path.AddRectangle(t.MapList[t.MapIndex].layers[t.LayerIndex].tiles[invalidatedTileIndex].tileRect);
+                    g.SetClip(path);
+                    g.Clear(Color.Transparent);
+                    g.ResetClip();
+                }
+
+
+                for (int layerIndex = 0; layerIndex < t.MapList[t.MapIndex].layers.Count; layerIndex++)
+                {
+                    Layer CurrentLayer = t.MapList[t.MapIndex].layers[layerIndex];
+
+                    if (fillTiles || redrawAllTiles)
+                        for (int tileIndex = 0; tileIndex < CurrentLayer.tiles.Count; tileIndex++)
+                            g.DrawImage(CurrentLayer.tiles[tileIndex].image, CurrentLayer.tiles[tileIndex].tileRect.Location);
+
+                    else if (t.MapList[t.MapIndex].layers[t.LayerIndex].tiles.Count > invalidatedTileIndex)
+                        g.DrawImage(CurrentLayer.tiles[invalidatedTileIndex].image, CurrentLayer.tiles[invalidatedTileIndex].tileRect.Location);
+                }
+            }
 
             if (drawGrid == true)
                 g.DrawImage(gridDisplay, 0, 0);
+            if (redrawAllTiles)
+                redrawAllTiles = false;
 
             g.Dispose();
             pictureBox.Image = display;
@@ -67,7 +98,6 @@ namespace MapEditorApp
             Graphics g = SetGraphics(gridDisplay);
             g.Clear(Color.Transparent);
 
-
             for (int x = 0; x < MapSize.Width; x += Grid.Width)
                 for (int y = 0; y < MapSize.Height; y += Grid.Height)
                     g.DrawRectangle(new Pen(Brushes.Black), x, y, Grid.Width, Grid.Height);
@@ -77,37 +107,73 @@ namespace MapEditorApp
             Draw();
         }
 
-        private void PaintTile(Point MousePos)
+        private void PaintTile(Point MousePos, Tile ClickedTile, int ClickedTileIndex)
         {
             if (t.selectedTiles.Count == 0 || t.PaintIndex == -1) { return; }
+       
 
-            //int x = MousePos.X / position.Size.Width;
-            //int y = MousePos.Y / position.Size.Height;
-            //position.Location = new Point(x * position.Size.Width, y * position.Size.Height);
-
-            //if (position.X < 0) position.X = 0;
-            //else if (position.Right > pictureBox.Width) position.X = pictureBox.Width - position.Width;
-            //if (position.Y < 0) position.Y = 0;
-            //else if (position.Bottom > pictureBox.Height) position.Y = pictureBox.Height - position.Height;
-
-            //Graphics g = Graphics.FromImage(t.MapList[t.MapIndex].layers[t.LayerIndex]);
-            //g.SetClip(position);
-            //g.Clear(Color.Transparent);
-            //g.ResetClip();
-
-            for ()
-
-            if (eraseTiles == false)
+            if (eraseTiles)
             {
-                for (int row = 0; row < t.selectedGrid.X; row++)
-                    for (int col = 0; col < t.selectedGrid.Y; col++)
-                        ;
+                if (fillTiles)
+                {
+                    t.MapList[t.MapIndex].layers[t.LayerIndex].ClearAllTiles();
+                }
 
+                else
+                {
+                    if (ClickedTile.isFilled)
+                    {
+                        Graphics g = Graphics.FromImage(ClickedTile.image);
+                        g.Clear(Color.Transparent);
+                        g.Dispose();
 
-                //g.DrawImage(t.paintImage, position.Location);
+                        ClickedTile.isFilled = false;
+
+                        invalidatedTileIndex = ClickedTileIndex;
+                    }
+                }
             }
 
-            //g.Dispose();
+            else if (copyTiles)
+            {
+                copiedTile = ClickedTile;
+            }
+
+            else
+            {
+                if (fillTiles)
+                {
+                    t.MapList[t.MapIndex].layers[t.LayerIndex].FillAllTiles(t.selectedTiles[0].image);
+                }
+
+                else
+                {
+                    if (!ClickedTile.isFilled)
+                    {
+                        Graphics g = Graphics.FromImage(ClickedTile.image);
+                        g.DrawImage(t.selectedTiles[0].image, 0, 0);
+                        g.Dispose();
+
+                       ClickedTile.isFilled = true;
+
+                       invalidatedTileIndex = ClickedTileIndex;
+                    }
+                }
+            }
+        }
+
+        public Tile GetClickedTile(Point MouseLocation, ref int TileIndex)
+        {
+            for (int i = 0; i < t.MapList[t.MapIndex].layers[t.LayerIndex].tiles.Count; i++)
+            {
+                if (t.MapList[t.MapIndex].layers[t.LayerIndex].tiles[i].tileRect.Contains(MouseLocation))
+                {
+                    TileIndex = i;
+                    return t.MapList[t.MapIndex].layers[t.LayerIndex].tiles[i];
+                }
+            }
+
+            return null;
         }
 
         //public void ResizeAndSetImage(Image TileImage, Size MapSize)
@@ -139,7 +205,12 @@ namespace MapEditorApp
         {
             if (t.MapIndex == -1 || t.LayerIndex == -1 || t.PaintIndex == -1 || e.Button != MouseButtons.Left) { return; }
 
-            PaintTile((e as MouseEventArgs).Location);
+            int TileIndex = 0;
+
+            Tile ClickedTile = GetClickedTile((e as MouseEventArgs).Location, ref TileIndex);
+            if (ClickedTile != null)
+                PaintTile(ClickedTile.tileRect.Location, ClickedTile, TileIndex);
+
             Draw();
         }
 
@@ -147,7 +218,11 @@ namespace MapEditorApp
         {
             if (t.MapIndex == -1 || t.LayerIndex == -1 || t.PaintIndex == -1 || e.Button != MouseButtons.Left) { return; }
 
-            PaintTile((e as MouseEventArgs).Location);
+            int TileIndex = 0;
+
+            Tile ClickedTile = GetClickedTile((e as MouseEventArgs).Location, ref TileIndex);
+            if (ClickedTile != null)
+                PaintTile((e as MouseEventArgs).Location, ClickedTile, TileIndex);
             Draw();
         }
         #endregion

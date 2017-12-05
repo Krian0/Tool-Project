@@ -14,7 +14,6 @@ namespace MapEditorApp
     {
         Form tool;
         Form editor;
-        Form selector;
 
         public MapEditorParent()
         {
@@ -41,18 +40,7 @@ namespace MapEditorApp
             AddNewTab(editor);
             editor.Show();
 
-            selector = new ImageSelection(tool as MapTools)
-            {
-                MdiParent = Parent as MapEditorParent,
-                TopLevel = false,
-                AutoScroll = true,
-                Dock = DockStyle.Fill
-            };
-            AddNewTab(selector);
-            selector.Show();
-
             (tool as MapTools).SetEditor(editor as MapEditor);
-            tabControl.SelectedTab = tabControl.TabPages[0];
         }
 
         public void AddNewTab(Form form)
@@ -136,10 +124,8 @@ namespace MapEditorApp
         {
             (editor as MapEditor).eraseTiles = !(editor as MapEditor).eraseTiles;
             (editor as MapEditor).copyTiles = false;
-            (editor as MapEditor).fillTiles = false;
 
             toolCopy.Checked = false;
-            toolFill.Checked = false;
         }
 
         private void ToolCopy_Click(object sender, EventArgs e)
@@ -154,11 +140,9 @@ namespace MapEditorApp
 
         private void ToolFill_Click(object sender, EventArgs e)
         {
-            (editor as MapEditor).eraseTiles = false;
             (editor as MapEditor).copyTiles = false;
             (editor as MapEditor).fillTiles = !(editor as MapEditor).fillTiles;
-
-            toolErase.Checked = false;
+            
             toolCopy.Checked = false;
         }
 

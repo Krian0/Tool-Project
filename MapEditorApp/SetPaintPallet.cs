@@ -17,29 +17,31 @@ namespace MapEditorApp
 
         private void ButtonConfirm_Click(object sender, EventArgs e)
         {
-            int Width = (int)numericWidth.Value;
-            int Height = (int)numericHeight.Value;
-            int Margin = (int)numericMargin.Value;
+            int GridWidth = (int)numericWidth.Value;
+            int GridHeight = (int)numericHeight.Value;
+            int GridMargin = (int)numericMargin.Value;
 
-            t.paintPalletGrid = new Size(Width, Height);
-            t.paintPalletMargin = Margin;
+            t.paintPalletGrid = new Size(GridWidth, GridHeight);
+            t.paintPalletMargin = GridMargin;
 
-            Bitmap TileImage = new Bitmap(Width, Height);
-            Graphics g = Graphics.FromImage(TileImage);
 
             t.paintTiles.Clear();
 
-            for (int x = 0; x < t.displayImage.Width; x += (Width + Margin))
+            for (int x = 0; x < t.displayImage.Width; x += (GridWidth + GridMargin))
             {
-                for (int y = 0; y < t.displayImage.Height; y += (Height + Margin))
+                for (int y = 0; y < t.displayImage.Height; y += (GridHeight + GridMargin))
                 {
+                    Bitmap TileImage = new Bitmap(GridWidth, GridHeight);
+
+                    Graphics g = Graphics.FromImage(TileImage);
                     g.Clear(Color.Transparent);
-                    g.DrawImage(t.displayImage, 0, 0, new Rectangle(x, y, Width, Height), GraphicsUnit.Pixel);
-                    t.AddTile(TileImage, new Point(x, y));
+                    g.DrawImage(t.displayImage, 0, 0, new Rectangle(x, y, GridWidth, GridHeight), GraphicsUnit.Pixel);
+
+                    t.AddTileToPallet(TileImage, new Point(x, y));
+                    g.Dispose();
                 }
             }
 
-            g.Dispose();
             t.Draw();
             Close();
         }

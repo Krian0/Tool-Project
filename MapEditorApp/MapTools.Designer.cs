@@ -42,13 +42,13 @@
             this.listViewLayers = new ComponentOwl.BetterListView.BetterListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.picturePaintPallet = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.buttonColourCycle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.listViewMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.listViewLayers)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picturePaintPallet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonFromFile
@@ -192,14 +192,14 @@
             this.picturePaintPallet.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PicturePaintPallet_MouseMove);
             this.picturePaintPallet.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PicturePaintPallet_MouseUp);
             // 
-            // pictureBox1
+            // pictureBoxPreview
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(9, 670);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(208, 184);
-            this.pictureBox1.TabIndex = 23;
-            this.pictureBox1.TabStop = false;
+            this.pictureBoxPreview.Location = new System.Drawing.Point(9, 670);
+            this.pictureBoxPreview.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBoxPreview.Name = "pictureBoxPreview";
+            this.pictureBoxPreview.Size = new System.Drawing.Size(208, 184);
+            this.pictureBoxPreview.TabIndex = 23;
+            this.pictureBoxPreview.TabStop = false;
             // 
             // buttonColourCycle
             // 
@@ -218,7 +218,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(226, 894);
             this.Controls.Add(this.buttonColourCycle);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pictureBoxPreview);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.listViewLayers);
             this.Controls.Add(this.buttonDeleteLayer);
@@ -237,7 +237,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.listViewLayers)).EndInit();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picturePaintPallet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -256,7 +256,7 @@
         private ComponentOwl.BetterListView.BetterListView listViewLayers;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox picturePaintPallet;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBoxPreview;
         private System.Windows.Forms.Button buttonColourCycle;
     }
 }
